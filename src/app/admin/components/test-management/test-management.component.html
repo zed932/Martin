@@ -9,41 +9,93 @@
   @if (showAddTestForm) {
     <div class="add-test-form">
       <h4>Создание нового теста</h4>
+
+      @if (errorMessage) {
+        <div class="alert alert-danger">{{ errorMessage }}</div>
+      }
+
       <form [formGroup]="testForm" (ngSubmit)="createTest()">
         <div class="form-group">
-          <label>Название теста</label>
-          <input type="text" formControlName="title" class="form-control" placeholder="Введите название теста">
+          <label>Название теста *</label>
+          <input
+            type="text"
+            formControlName="title"
+            class="form-control"
+            placeholder="Введите название теста"
+            [class.is-invalid]="title?.invalid && title?.touched">
+          @if (title?.invalid && title?.touched) {
+            <div class="invalid-feedback">
+              Название теста обязательно
+            </div>
+          }
         </div>
 
         <div class="form-group">
-          <label>Тема</label>
-          <select formControlName="topic" class="form-control">
+          <label>Тема *</label>
+          <select
+            formControlName="topic"
+            class="form-control"
+            [class.is-invalid]="topic?.invalid && topic?.touched">
             <option value="">Выберите тему</option>
-            <option value="calculus">Математический анализ</option>
-            <option value="algebra">Алгебра</option>
-            <option value="geometry">Геометрия</option>
-            <option value="sets">Теория множеств</option>
-            <option value="matrices">Матрицы</option>
+            @for (topicItem of topics; track topicItem.value) {
+              <option [value]="topicItem.value">{{ topicItem.label }}</option>
+            }
+          </select>
+          @if (topic?.invalid && topic?.touched) {
+            <div class="invalid-feedback">
+              Выберите тему теста
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Описание *</label>
+          <textarea
+            formControlName="description"
+            class="form-control"
+            rows="3"
+            placeholder="Описание теста"
+            [class.is-invalid]="description?.invalid && description?.touched"></textarea>
+          @if (description?.invalid && description?.touched) {
+            <div class="invalid-feedback">
+              Описание обязательно
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Сложность</label>
+          <select formControlName="difficulty" class="form-control">
+            @for (level of difficultyLevels; track level.value) {
+              <option [value]="level.value">{{ level.label }}</option>
+            }
           </select>
         </div>
 
         <div class="form-group">
-          <label>Описание</label>
-          <textarea formControlName="description" class="form-control" rows="3" placeholder="Описание теста"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Количество вопросов</label>
-          <input type="number" formControlName="questionsCount" class="form-control" min="1" max="50">
-        </div>
-
-        <div class="form-group">
-          <label>Время на выполнение (минут)</label>
-          <input type="number" formControlName="timeLimit" class="form-control" min="5" max="180">
+          <label>Время на выполнение (минут) *</label>
+          <input
+            type="number"
+            formControlName="timeLimit"
+            class="form-control"
+            min="5"
+            max="180"
+            [class.is-invalid]="timeLimit?.invalid && timeLimit?.touched">
+          @if (timeLimit?.invalid && timeLimit?.touched) {
+            <div class="invalid-feedback">
+              Время должно быть от 5 до 180 минут
+            </div>
+          }
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn-success" [disabled]="testForm.invalid">
+          <button
+            type="submit"
+            class="btn-success"
+            [disabled]="testForm.invalid || isLoading">
+            @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
             Создать тест
           </button>
         </div>
@@ -52,7 +104,25 @@
   }
 
   <div class="tests-list">
-    <h4>Существующие тесты</h4>
+    <h4>Существующие тесты ({{ tests.length }})</h4>
+
+    @if (isLoading && !showAddTestForm) {
+      <div class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Загрузка...</span>
+        </div>
+      </div>
+    }
+
+    @if (errorMessage && !showAddTestForm) {
+      <div class="alert alert-danger">{{ errorMessage }}</div>
+    }
+
+    @if (tests.length === 0 && !isLoading) {
+      <div class="empty-state">
+        <p>Нет созданных тестов</p>
+      </div>
+    }
 
     @for (test of tests; track test.id) {
       <div class="test-card">
@@ -61,9 +131,9 @@
           <p>{{ test.description }}</p>
           <div class="test-meta">
             <span class="topic-badge">{{ getTopicName(test.topic) }}</span>
-            <span>Вопросов: {{ test.questionsCount }}</span>
+            <span>Вопросов: {{ test.questions?.length || 0 }}</span> <!-- Исправлено -->
             <span>Время: {{ test.timeLimit }} мин</span>
-            <span>Сложность: {{ test.difficulty }}</span>
+            <span>Сложность: {{ getDifficultyName(test.difficulty) }}</span> <!-- Исправлено -->
           </div>
         </div>
         <div class="test-actions">
@@ -71,10 +141,6 @@
           <button class="btn-delete" (click)="deleteTest(test.id)">🗑️ Удалить</button>
           <button class="btn-view">👁️ Просмотр</button>
         </div>
-      </div>
-    } @empty {
-      <div class="empty-state">
-        <p>Нет созданных тестов</p>
       </div>
     }
   </div>

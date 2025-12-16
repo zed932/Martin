@@ -1,4 +1,3 @@
-// src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -29,6 +28,78 @@ export interface UserResponse {
   email: string;
   role: 'admin' | 'student';
   createdAt: string;
+}
+
+// Новые интерфейсы для теории
+export interface TheorySectionResponse {
+  id: string;
+  topic: 'calculator' | 'sets' | 'matrices';
+  title: string;
+  content: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+  isActive: boolean;
+}
+
+export interface TheoryCreateRequest {
+  topic: 'calculator' | 'sets' | 'matrices';
+  title: string;
+  content: string;
+  order: number;
+  isActive?: boolean;
+}
+
+export interface TheoryUpdateRequest {
+  topic?: 'calculator' | 'sets' | 'matrices';
+  title?: string;
+  content?: string;
+  order?: number;
+  isActive?: boolean;
+}
+
+// Новые интерфейсы для тестов
+export interface TestResponse {
+  id: string;
+  title: string;
+  description: string;
+  topic: string;
+  questions: Question[];
+  timeLimit: number;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  createdAt: string;
+  updatedAt: string;
+  isActive: boolean;
+}
+
+export interface Question {
+  id: string;
+  text: string;
+  type: 'single' | 'multiple' | 'text';
+  options?: string[];
+  correctAnswer?: string;
+}
+
+export interface TestCreateRequest {
+  title: string;
+  description: string;
+  topic: string;
+  questions: Omit<Question, 'id'>[];
+  timeLimit: number;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+}
+
+export interface TestSubmission {
+  testId: string;
+  answers: string[];
+  timeSpent: number;
+}
+
+export interface TestResult {
+  score: number;
+  correctCount: number;
+  totalCount: number;
+  resultId: string;
 }
 
 @Injectable({
@@ -82,7 +153,125 @@ export class ApiService {
     );
   }
 
-  // Обработка ошибок
+  // ========== НОВЫЕ МЕТОДЫ ДЛЯ ТЕОРИИ ==========
+
+  // Получить все разделы теории (админ)
+  getAllTheory(): Observable<ApiResponse<TheorySectionResponse[]>> {
+    return this.http.get<ApiResponse<TheorySectionResponse[]>>(
+      `${this.apiUrl}/theory`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Получить теорию по теме
+  getTheoryByTopic(topic: string): Observable<ApiResponse<TheorySectionResponse[]>> {
+    return this.http.get<ApiResponse<TheorySectionResponse[]>>(
+      `${this.apiUrl}/theory/topic/${topic}`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Создать раздел теории
+  createTheorySection(section: TheoryCreateRequest): Observable<ApiResponse<TheorySectionResponse>> {
+    return this.http.post<ApiResponse<TheorySectionResponse>>(
+      `${this.apiUrl}/theory`,
+      section
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Обновить раздел теории
+  updateTheorySection(id: string, section: TheoryUpdateRequest): Observable<ApiResponse<TheorySectionResponse>> {
+    return this.http.put<ApiResponse<TheorySectionResponse>>(
+      `${this.apiUrl}/theory/${id}`,
+      section
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Удалить раздел теории
+  deleteTheorySection(id: string): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(
+      `${this.apiUrl}/theory/${id}`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // ========== НОВЫЕ МЕТОДЫ ДЛЯ ТЕСТОВ ==========
+
+  // Получить все тесты (админ)
+  getAllTests(): Observable<ApiResponse<TestResponse[]>> {
+    return this.http.get<ApiResponse<TestResponse[]>>(
+      `${this.apiUrl}/tests`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Получить тесты по теме
+  getTestsByTopic(topic: string): Observable<ApiResponse<TestResponse[]>> {
+    return this.http.get<ApiResponse<TestResponse[]>>(
+      `${this.apiUrl}/tests/topic/${topic}`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Получить конкретный тест
+  getTestById(id: string): Observable<ApiResponse<TestResponse>> {
+    return this.http.get<ApiResponse<TestResponse>>(
+      `${this.apiUrl}/tests/${id}`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Создать тест
+  createTest(test: TestCreateRequest): Observable<ApiResponse<TestResponse>> {
+    return this.http.post<ApiResponse<TestResponse>>(
+      `${this.apiUrl}/tests`,
+      test
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Обновить тест
+  updateTest(id: string, test: Partial<TestCreateRequest>): Observable<ApiResponse<TestResponse>> {
+    return this.http.put<ApiResponse<TestResponse>>(
+      `${this.apiUrl}/tests/${id}`,
+      test
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Удалить тест
+  deleteTest(id: string): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(
+      `${this.apiUrl}/tests/${id}`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Отправить результаты теста
+  submitTest(submission: TestSubmission): Observable<ApiResponse<TestResult>> {
+    return this.http.post<ApiResponse<TestResult>>(
+      `${this.apiUrl}/tests/${submission.testId}/submit`,
+      submission
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // ========== ОБРАБОТКА ОШИБОК ==========
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Произошла ошибка. Пожалуйста, попробуйте позже.';
 
