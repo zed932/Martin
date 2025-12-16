@@ -1,0 +1,265 @@
+<div class="theory-management">
+  <!-- Заголовок -->
+  <div class="header">
+    <h2>Управление теоретическими материалами</h2>
+    <p class="subtitle">Здесь вы можете создавать, редактировать и удалять разделы теории</p>
+  </div>
+
+  <!-- Сообщения -->
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="error-icon">⚠️</span>
+      <p>{{ error }}</p>
+      <button class="close-btn" (click)="error = null">×</button>
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      <span class="success-icon">✓</span>
+      <p>{{ successMessage }}</p>
+      <button class="close-btn" (click)="successMessage = null">×</button>
+    </div>
+  }
+
+  <!-- Форма редактирования/создания -->
+  @if (isEditing) {
+    <div class="edit-form">
+      <h3>{{ currentSection ? 'Редактирование раздела' : 'Создание нового раздела' }}</h3>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="topic">Тема *</label>
+          <select
+            id="topic"
+            [(ngModel)]="formData.topic"
+            class="form-control"
+          >
+            @for (topic of topics; track topic.value) {
+              <option [value]="topic.value">{{ topic.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="title">Название раздела *</label>
+          <input
+            type="text"
+            id="title"
+            [(ngModel)]="formData.title"
+            class="form-control"
+            placeholder="Введите название раздела"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="order">Порядок отображения *</label>
+          <input
+            type="number"
+            id="order"
+            [(ngModel)]="formData.order"
+            class="form-control"
+            min="1"
+            placeholder="1"
+          >
+          <small class="hint">Чем меньше число, тем выше в списке</small>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              [(ngModel)]="formData.isActive"
+            >
+            <span>Активный раздел</span>
+          </label>
+          <small class="hint">Неактивные разделы не отображаются студентам</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="content">Содержание раздела *</label>
+        <textarea
+          id="content"
+          [(ngModel)]="formData.content"
+          class="form-control"
+          rows="10"
+          placeholder="Введите содержание раздела в формате HTML..."
+        ></textarea>
+        <small class="hint">Можно использовать HTML-разметку</small>
+      </div>
+
+      <div class="form-actions">
+        <button
+          class="btn btn-primary"
+          (click)="saveSection()"
+          [disabled]="isLoading"
+        >
+          @if (isLoading) {
+            <span class="spinner"></span>
+          }
+          {{ currentSection ? 'Сохранить изменения' : 'Создать раздел' }}
+        </button>
+        <button
+          class="btn btn-secondary"
+          (click)="cancelEdit()"
+          [disabled]="isLoading"
+        >
+          Отмена
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Панель управления -->
+  <div class="control-panel">
+    <div class="filters">
+      <div class="filter-group">
+        <label for="topicFilter">Фильтр по теме:</label>
+        <select
+          id="topicFilter"
+          [(ngModel)]="selectedTopic"
+          (change)="onTopicChange()"
+          class="form-control"
+        >
+          <option value="all">Все темы</option>
+          @for (topic of topics; track topic.value) {
+            <option [value]="topic.value">{{ topic.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="search">Поиск:</label>
+        <div class="search-box">
+          <input
+            type="text"
+            id="search"
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+            class="form-control"
+            placeholder="Поиск по названию или содержанию..."
+          >
+          @if (searchQuery) {
+            <button class="clear-search" (click)="searchQuery = ''; onSearch()">×</button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button
+        class="btn btn-success"
+        (click)="createSection()"
+        [disabled]="isLoading || isEditing"
+      >
+        + Создать новый раздел
+      </button>
+      <button
+        class="btn btn-refresh"
+        (click)="loadSections()"
+        [disabled]="isLoading"
+      >
+        @if (isLoading) {
+          <span class="spinner"></span>
+        } @else {
+          🔄 Обновить
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Таблица разделов -->
+  <div class="sections-table">
+    @if (isLoading && filteredSections.length === 0) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Загрузка разделов теории...</p>
+      </div>
+    }
+
+    @if (!isLoading && filteredSections.length === 0) {
+      <div class="empty-state">
+        <p>Разделы теории не найдены</p>
+        <p class="hint">Создайте первый раздел или измените параметры фильтрации</p>
+      </div>
+    }
+
+    @if (!isLoading && filteredSections.length > 0) {
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Название</th>
+            <th>Тема</th>
+            <th>Порядок</th>
+            <th>Статус</th>
+            <th>Обновлено</th>
+            <th>Действия</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (section of filteredSections; track section.id) {
+              <tr [class.inactive]="!section.isActive">
+                <td class="title-cell">
+                  <strong>{{ section.title }}</strong>
+                  @if (!section.isActive) {
+                    <span class="badge badge-warning">Неактивно</span>
+                  }
+                </td>
+                <td>
+                  <span class="topic-badge" [class]="'topic-' + section.topic">
+                    {{ getTopicLabel(section.topic) }}
+                  </span>
+                </td>
+                <td>{{ section.order }}</td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.active]="section.isActive"
+                    [class.inactive]="!section.isActive"
+                  >
+                    {{ section.isActive ? 'Активно' : 'Неактивно' }}
+                  </span>
+                </td>
+                <td>
+                  <small>{{ formatDate(section.updatedAt) }}</small>
+                </td>
+                <td class="actions-cell">
+                  <button
+                    class="btn-icon btn-edit"
+                    (click)="editSection(section)"
+                    [disabled]="isLoading"
+                    title="Редактировать"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    class="btn-icon btn-toggle"
+                    (click)="toggleSectionActive(section)"
+                    [disabled]="isLoading"
+                    [title]="section.isActive ? 'Деактивировать' : 'Активировать'"
+                  >
+                    {{ section.isActive ? '👁️' : '👁️‍🗨️' }}
+                  </button>
+                  <button
+                    class="btn-icon btn-delete"
+                    (click)="deleteSection(section)"
+                    [disabled]="isLoading"
+                    title="Удалить"
+                  >
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <small>Показано {{ filteredSections.length }} из {{ sections.length }} разделов</small>
+      </div>
+    }
+  </div>
+</div>

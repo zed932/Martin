@@ -23,6 +23,11 @@ export const ADMIN_ROUTES: Routes = [
         path: 'results',
         loadComponent: () => import('./components/test-results/test-results.component').then(m => m.TestResultsComponent)
       },
+      // Добавляем маршрут для управления теорией
+      {
+        path: 'theory',
+        loadComponent: () => import('./components/theory-management/theory-management.component').then(m => m.TheoryManagementComponent)
+      }
     ]
   }
 ];
