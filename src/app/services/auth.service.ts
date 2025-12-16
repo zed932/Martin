@@ -10,12 +10,32 @@ import { tap, catchError } from 'rxjs/operators';
 export class AuthService {
   private currentUser = signal<UserResponse | null>(null);
   private isLoggedInSignal = signal<boolean>(false);
+  private isInitialized = signal<boolean>(false);
+  private initializationError = signal<string | null>(null);
 
   constructor(
     private apiService: ApiService,
     private router: Router
   ) {
-    this.checkAuth();
+    this.initializeAuth();
+  }
+
+  private initializeAuth(): void {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      this.isInitialized.set(true);
+      return;
+    }
+  }
+
+  // Добавляем метод для проверки инициализации
+  isInitialized$(): boolean {
+    return this.isInitialized();
+  }
+
+  getInitializationError(): string | null {
+    return this.initializationError();
   }
 
   private checkAuth(): void {

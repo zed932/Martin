@@ -131,7 +131,7 @@
           <p>{{ test.description }}</p>
           <div class="test-meta">
             <span class="topic-badge">{{ getTopicName(test.topic) }}</span>
-            <span>Вопросов: {{ test.questions?.length || 0 }}</span> <!-- Исправлено -->
+            <span>Вопросов: {{ test.questions.length || 0 }}</span> <!-- Исправлено -->
             <span>Время: {{ test.timeLimit }} мин</span>
             <span>Сложность: {{ getDifficultyName(test.difficulty) }}</span> <!-- Исправлено -->
           </div>
