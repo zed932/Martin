@@ -1,0 +1,88 @@
+<div class="test-results">
+  <div class="results-header">
+    <h3>Результаты тестов</h3>
+    <div class="filters">
+      <select class="filter-select">
+        <option value="">Все тесты</option>
+        <option value="sets">Теория множеств</option>
+        <option value="matrices">Матрицы</option>
+        <option value="algebra">Алгебра</option>
+      </select>
+      <select class="filter-select">
+        <option value="">Все пользователи</option>
+        <option value="student">Студенты</option>
+        <option value="admin">Администраторы</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="results-table">
+    <table>
+      <thead>
+      <tr>
+        <th>Пользователь</th>
+        <th>Тест</th>
+        <th>Дата</th>
+        <th>Результат</th>
+        <th>Оценка</th>
+        <th>Время</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (result of testResults; track result.id) {
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">{{ result.userName.charAt(0) }}</div>
+                <div>
+                  <strong>{{ result.userName }}</strong>
+                  <div class="user-email">{{ result.userEmail }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ result.testName }}</td>
+            <td>{{ result.date }}</td>
+            <td>
+              <div class="score-bar">
+                <div class="score-fill" [style.width.%]="(result.correct / result.total) * 100"></div>
+                <span>{{ result.correct }}/{{ result.total }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="grade-badge" [class.excellent]="result.grade === 'Отлично'"
+                    [class.good]="result.grade === 'Хорошо'"
+                    [class.average]="result.grade === 'Удовлетворительно'">
+                {{ result.grade }}
+              </span>
+            </td>
+            <td>{{ result.timeSpent }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stats-summary">
+    <div class="stat-item">
+      <span class="stat-label">Всего тестов пройдено:</span>
+      <span class="stat-value">{{ totalTests }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Средний результат:</span>
+      <span class="stat-value">{{ averageScore }}%</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Лучший результат:</span>
+      <span class="stat-value">{{ bestScore }}%</span>
+    </div>
+  </div>
+
+  <div class="export-section">
+    <button class="btn-export">
+      📥 Экспорт результатов
+    </button>
+    <button class="btn-print">
+      🖨️ Печать отчета
+    </button>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="admin-container">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <h3>Админ-панель</h3>
+    </div>
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="sidebar-link">
+        📊 Панель управления
+      </a>
+      <a routerLink="/admin/tests" routerLinkActive="active" class="sidebar-link">
+        📝 Управление тестами
+      </a>
+      <a routerLink="/admin/theory" routerLinkActive="active" class="sidebar-link">
+        📚 Управление теорией
+      </a>
+      <a routerLink="/admin/results" routerLinkActive="active" class="sidebar-link">
+        📈 Результаты тестов
+      </a>
+      <a routerLink="/" class="sidebar-link">
+        ← На главную
+      </a>
+    </nav>
+  </aside>
+
+  <main class="admin-content">
+    <div class="content-header">
+      <h2>Административная панель</h2>
+      <p>Управление обучающей платформой</p>
+    </div>
+    <div class="content-body">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

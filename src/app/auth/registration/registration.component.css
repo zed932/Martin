@@ -1,0 +1,69 @@
+.registration-container {
+  width: 100%;
+}
+
+.registration-form h3 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  text-align: center;
+  font-weight: 500;
+}
+
+.form-description {
+  text-align: center;
+  color: #6c757d;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #2c3e50;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.btn {
+  padding: 12px;
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: #1a252f;
+}
+
+.role-info {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #6c757d;
+  border-left: 3px solid #3498db;
+}

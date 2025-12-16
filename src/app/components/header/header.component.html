@@ -1,0 +1,48 @@
+<header class="header">
+  <div class="header-content">
+    <div class="logo-section">
+      <h1 class="header-title">
+        <a routerLink="/calculator" class="logo-link">Обучающая платформа</a>
+      </h1>
+      @if (user) {
+        <div class="user-info">
+          <span class="user-name">{{ user.name }}</span>
+          <span class="user-role" [class.role-admin]="user.role === 'admin'"
+                [class.role-student]="user.role === 'student'">
+            {{ user.role === 'admin' ? ' Администратор' : ' Студент' }}
+          </span>
+        </div>
+      }
+    </div>
+
+    <nav class="nav-menu">
+      <a routerLink="/calculator"
+         routerLinkActive="active"
+         class="nav-link">
+        🧮 Калькулятор
+      </a>
+      <a routerLink="/set-calculator"
+         routerLinkActive="active"
+         class="nav-link">
+        Калькулятор множеств
+      </a>
+      <a routerLink="/matrix-calculator"
+         routerLinkActive="active"
+         class="nav-link">
+        Калькулятор матриц
+      </a>
+
+      @if (isAdmin) {
+        <a routerLink="/admin/dashboard"
+           routerLinkActive="active"
+           class="nav-link admin-link">
+          Админ-панель
+        </a>
+      }
+
+      <button (click)="logout()" class="btn-logout">
+        Выйти
+      </button>
+    </nav>
+  </div>
+</header>

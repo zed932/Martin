@@ -1,0 +1,88 @@
+<div class="matrix-calculator-container">
+  <h2>Калькулятор матриц</h2>
+  <div class="matrix-controls">
+    <div class="matrix-size-input">
+      <label>Строки: </label>
+      <input type="number" [(ngModel)]="rows" min="1" max="10" class="size-input">
+      <label>Столбцы: </label>
+      <input type="number" [(ngModel)]="cols" min="1" max="10" class="size-input">
+      <button (click)="createMatrix()" class="btn btn-primary">Создать матрицу</button>
+    </div>
+  </div>
+
+  <div class="matrix-operations">
+    <h3>Операции с матрицами</h3>
+    <div class="operation-buttons">
+      <button (click)="setOperation('add')" class="btn btn-operator">Сложение (+)</button>
+      <button (click)="setOperation('subtract')" class="btn btn-operator">Вычитание (-)</button>
+      <button (click)="setOperation('multiply')" class="btn btn-operator">Умножение (×)</button>
+      <button (click)="setOperation('transpose')" class="btn btn-operator">Транспонирование</button>
+      <button (click)="setOperation('determinant')" class="btn btn-operator">Определитель</button>
+    </div>
+  </div>
+
+  <div class="matrices-container">
+    <div class="matrix-input">
+      <h4>Матрица A</h4>
+      <div class="matrix-grid">
+        @for (row of matrixA; track $index; let i = $index) {
+          <div class="matrix-row">
+            @for (cell of row; track $index; let j = $index) {
+              <input [(ngModel)]="matrixA[i][j]"
+                     type="number"
+                     class="matrix-cell">
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (operation !== 'transpose' && operation !== 'determinant') {
+      <div class="matrix-input">
+        <h4>Матрица B</h4>
+        <div class="matrix-grid">
+          @for (row of matrixB; track $index; let i = $index) {
+            <div class="matrix-row">
+              @for (cell of row; track $index; let j = $index) {
+                <input [(ngModel)]="matrixB[i][j]"
+                       type="number"
+                       class="matrix-cell">
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="calculate-section">
+    <button (click)="calculateMatrix()" class="btn btn-calculate">Вычислить</button>
+  </div>
+
+  @if (resultMatrix.length > 0) {
+    <div class="result-section">
+      <h3>Результат</h3>
+      <div class="matrix-grid result-matrix">
+        @for (row of resultMatrix; track $index; let i = $index) {
+          <div class="matrix-row">
+            @for (cell of row; track $index; let j = $index) {
+              <div class="matrix-cell result-cell">
+                {{cell}}
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="theory-section-after">
+    <app-theory-panel
+      [topic]="'matrices'"
+      [title]="'Теория матриц'"
+      [size]="'normal'"
+      [collapsible]="true"
+      [initiallyExpanded]="true">
+    </app-theory-panel>
+  </div>
+</div>

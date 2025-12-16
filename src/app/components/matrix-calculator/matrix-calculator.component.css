@@ -1,0 +1,104 @@
+.matrix-calculator-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.matrix-controls {
+  margin-bottom: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.matrix-size-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.size-input {
+  width: 60px;
+  padding: 8px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.matrix-operations {
+  margin-bottom: 20px;
+}
+
+.operation-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.matrices-container {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.matrix-input {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.matrix-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.matrix-row {
+  display: flex;
+  gap: 5px;
+}
+
+.matrix-cell {
+  width: 50px;
+  height: 40px;
+  text-align: center;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  background: white;
+}
+
+.result-cell {
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  cursor: pointer;
+  background: white;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.btn:hover {
+  background: #f8f9fa;
+}
+
+.btn-operator {
+  background: #f8f9fa;
+}
+
+.btn-calculate {
+  background: #2c3e50;
+  color: white;
+  border-color: #2c3e50;
+}

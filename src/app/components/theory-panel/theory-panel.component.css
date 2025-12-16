@@ -1,0 +1,89 @@
+.theory-panel {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  margin: 20px 0;
+}
+
+.panel-header {
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.expand-icon {
+  color: #6c757d;
+  transition: transform 0.2s;
+}
+
+.theory-panel.expanded .expand-icon {
+  transform: rotate(180deg);
+}
+
+.panel-content {
+  padding: 20px;
+  background: white;
+}
+
+.section-title {
+  color: #2c3e50;
+  font-size: 1rem;
+  margin: 0 0 12px 0;
+  font-weight: 500;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 8px;
+}
+
+.section-content {
+  color: #2c3e50;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.section-content h2 {
+  font-size: 1.1rem;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.section-content code {
+  background: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', monospace;
+  font-size: 13px;
+  color: #2c3e50;
+}
+
+.loading-state, .error-state {
+  padding: 30px 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

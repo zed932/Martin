@@ -1,0 +1,350 @@
+<div class="set-calculator-container">
+  <h2>Калькулятор множеств</h2>
+
+  <div class="calculator-layout">
+    <!-- Левая панель - управление множествами -->
+    <div class="sets-panel">
+      <h3>Управление множествами (A, B, C)</h3>
+
+      <div class="add-set-section">
+        <select [(ngModel)]="newSetName" class="set-select">
+          <option value="">Выберите множество</option>
+          <option value="A">Множество A</option>
+          <option value="B">Множество B</option>
+          <option value="C">Множество C</option>
+        </select>
+        <input type="text" [(ngModel)]="newSetElements" placeholder="Элементы (через запятую)" class="elements-input">
+        <div class="set-actions">
+          <button (click)="updateSet()" class="btn btn-primary">Обновить множество</button>
+          <button (click)="clearSet()" class="btn btn-secondary">Очистить</button>
+        </div>
+      </div>
+
+      <div class="sets-list">
+        @for (set of sets; track set.name) {
+          <div class="set-item">
+            <span class="set-name">{{set.name}} = {{set.elements.length > 0 ? set.elements.join(', ') : '∅'}}</span>
+            <div class="set-info">
+              <span class="set-cardinality">|{{set.name}}| = {{set.elements.length}}</span>
+              <button (click)="editSet(set.name)" class="btn btn-edit btn-small">✎</button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="universal-set-info">
+        <h4>Универсум: {{getUniversalSet().join(', ')}}</h4>
+        <p>Всего элементов: {{getUniversalSet().length}}</p>
+      </div>
+    </div>
+
+    <!-- Центральная панель - ввод выражения -->
+    <div class="expression-panel">
+      <h3>Ввод выражения</h3>
+
+      <div class="expression-display">
+        <textarea [(ngModel)]="currentExpression"
+                  class="expression-input"
+                  placeholder="Введите выражение с A, B, C (например: A ∩ B)"
+                  rows="2"
+                  readonly></textarea>
+      </div>
+
+      <div class="expression-keypad">
+        <div class="keypad-row">
+          <button (click)="appendToExpression('A')" class="btn btn-set" title="Множество A">A</button>
+          <button (click)="appendToExpression('B')" class="btn btn-set" title="Множество B">B</button>
+          <button (click)="appendToExpression('C')" class="btn btn-set" title="Множество C">C</button>
+          <button (click)="appendToExpression('(')" class="btn btn-bracket">(</button>
+        </div>
+
+        <div class="keypad-row">
+          <button (click)="appendToExpression('∩')" class="btn btn-operator" title="Пересечение">∩</button>
+          <button (click)="appendToExpression('∪')" class="btn btn-operator" title="Объединение">∪</button>
+          <button (click)="appendToExpression('\\')" class="btn btn-operator" title="Разность">\</button>
+          <button (click)="appendToExpression(')')" class="btn btn-bracket">)</button>
+        </div>
+
+        <div class="keypad-row">
+          <button (click)="appendToExpression('∆')" class="btn btn-operator" title="Сим. разность">∆</button>
+          <button (click)="backspaceExpression()" class="btn btn-clear">⌫</button>
+          <button (click)="clearExpression()" class="btn btn-clear">Очистить</button>
+          <button (click)="calculateExpression()" class="btn btn-calculate">Вычислить</button>
+        </div>
+      </div>
+
+      <div class="predefined-expressions">
+        <h4>Примеры выражений:</h4>
+        <div class="expression-examples">
+          <button (click)="loadExample('A ∩ B')" class="btn btn-example">A ∩ B</button>
+          <button (click)="loadExample('A ∪ B')" class="btn btn-example">A ∪ B</button>
+          <button (click)="loadExample('A \\ B')" class="btn btn-example">A \ B</button>
+          <button (click)="loadExample('A ∆ B')" class="btn btn-example">A ∆ B</button>
+          <button (click)="loadExample('A ∩ B ∩ C')" class="btn btn-example">A ∩ B ∩ C</button>
+          <button (click)="loadExample('A ∪ B ∪ C')" class="btn btn-example">A ∪ B ∪ C</button>
+          <button (click)="loadExample('(A ∪ B) ∩ C')" class="btn btn-example">(A ∪ B) ∩ C</button>
+          <button (click)="loadExample('A \\ (B ∪ C)')" class="btn btn-example">A \ (B ∪ C)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Блок результатов с диаграммами Эйлера -->
+  @if (showResults) {
+    <div class="results-panel">
+      <h3>Результат</h3>
+
+      <div class="results-content">
+        <div class="euler-diagrams">
+          <!-- Диаграммы Эйлера -->
+          <div class="euler-diagram">
+            <svg [attr.width]="diagramWidth" [attr.height]="diagramHeight" [attr.viewBox]="getDiagramViewBox()">
+
+              <!-- Определения штриховок -->
+              <defs>
+                <pattern id="hatch-red" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+                  <line x1="0" y1="0" x2="0" y2="10" stroke="#ff0000" stroke-width="2"/>
+                </pattern>
+                <pattern id="hatch-blue" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(135)">
+                  <line x1="0" y1="0" x2="0" y2="10" stroke="#0000ff" stroke-width="2"/>
+                </pattern>
+                <pattern id="hatch-green" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(90)">
+                  <line x1="0" y1="0" x2="0" y2="10" stroke="#00aa00" stroke-width="2"/>
+                </pattern>
+              </defs>
+
+              <!-- ОТОБРАЖАЕМ КОНТУРЫ ВСЕХ ТРЕХ МНОЖЕСТВ (A, B, C) ВСЕГДА -->
+              @for (setName of getAllSetsForLabels(); track setName) {
+                <g>
+                  <circle [attr.cx]="getCirclePosition(setName).x"
+                          [attr.cy]="getCirclePosition(setName).y"
+                          [attr.r]="circleRadius"
+                          class="circle-outline"
+                          [attr.fill]="'none'"
+                          [attr.stroke]="getCircleStroke(setName)"
+                          [attr.stroke-width]="2.5"
+                          [attr.stroke-opacity]="usedSets.includes(setName) ? '1' : '0.3'"
+                          [attr.stroke-dasharray]="highlightedSet === setName ? '5,5' : 'none'"/>
+
+                  <!-- Подписи множеств В ЦЕНТРЕ КРУГОВ -->
+                  <text [attr.x]="getCirclePosition(setName).x"
+                        [attr.y]="getCirclePosition(setName).y"
+                        class="set-label"
+                        text-anchor="middle"
+                        dominant-baseline="middle"
+                        [attr.fill]="getCircleStroke(setName)"
+                        font-weight="bold"
+                        font-size="42"
+                        [attr.opacity]="usedSets.includes(setName) ? '1' : '0.5'"
+                        style="paint-order: stroke; stroke: white; stroke-width: 3; stroke-opacity: 0.8;">
+                    {{setName}}
+                  </text>
+                </g>
+              }
+
+              <!-- Затем отображаем области операций (только когда не просматриваем отдельное множество) -->
+              @if (!highlightedSet) {
+                <g>
+                  <!-- Область пересечения -->
+                  @if (currentOperationType === 'intersection') {
+                    <g>
+                      @for (region of getIntersectionRegions(); track region.path) {
+                        <path [attr.d]="region.path"
+                              [attr.fill]="region.fill"
+                              fill-rule="evenodd"
+                              [attr.stroke]="region.stroke"
+                              stroke-width="2"/>
+                      }
+                    </g>
+                  }
+
+
+                  @if (currentOperationType === 'union') {
+                    <g>
+                      @for (region of getUnionRegions(); track region.path) {
+                        <path [attr.d]="region.path"
+                              [attr.fill]="region.fill"
+                              fill-rule="evenodd"
+                              [attr.stroke]="region.stroke"
+                              stroke-width="2"
+                              stroke-dasharray="5,3"/>
+                      }
+                    </g>
+                  }
+
+
+                  @if (currentOperationType === 'difference') {
+                    <g>
+                      @for (region of getDifferenceRegions(); track region.path) {
+                        <path [attr.d]="region.path"
+                              [attr.fill]="region.fill"
+                              fill-rule="evenodd"
+                              [attr.stroke]="region.stroke"
+                              stroke-width="2"/>
+                      }
+                    </g>
+                  }
+
+                  <!-- Область симметрической разности -->
+                  @if (currentOperationType === 'symmetricDifference') {
+                    <g>
+                      @for (region of getSymmetricDifferenceRegions(); track region.path) {
+                        <path [attr.d]="region.path"
+                              [attr.fill]="region.fill"
+                              fill-rule="evenodd"
+                              [attr.stroke]="region.stroke"
+                              stroke-width="2"/>
+                      }
+                    </g>
+                  }
+                </g>
+              }
+
+              <!-- Отображение элементов множества при просмотре отдельного множества -->
+              @if (highlightedSet) {
+                <g>
+                  <!-- Заливка множества при просмотре -->
+                  <path [attr.d]="getSetFillPath(highlightedSet)"
+                        [attr.fill]="getHatchFill(highlightedSet)"
+                        fill-rule="evenodd"
+                        stroke="none"/>
+
+                  <!-- Элементы внутри множества -->
+                  @for (element of getSetElements(highlightedSet); track element; let i = $index) {
+                    <g>
+                      <circle [attr.cx]="getElementPositionX(element, i)"
+                              [attr.cy]="getElementPositionY(element, i)"
+                              r="16"
+                              [attr.fill]="getCircleStroke(highlightedSet)"
+                              fill-opacity="0.9"
+                              stroke="white"
+                              stroke-width="2.5"/>
+
+                      <text [attr.x]="getElementPositionX(element, i)"
+                            [attr.y]="getElementPositionY(element, i)"
+                            class="element-text"
+                            fill="white"
+                            text-anchor="middle"
+                            dominant-baseline="middle"
+                            font-weight="bold"
+                            font-size="14"
+                            style="paint-order: stroke; stroke: white; stroke-width: 2;">
+                        {{element}}
+                      </text>
+                    </g>
+                  }
+                </g>
+              }
+
+
+              <g>
+                <rect x="5" y="5" width="280" height="60" rx="10" fill="white" fill-opacity="0.95" stroke="#27ae60" stroke-width="2.5"/>
+                <text x="15" y="32" class="result-text" font-weight="bold" font-size="16" style="paint-order: stroke; stroke: white; stroke-width: 2; stroke-opacity: 0.7;">
+                  Результат: {{resultSet.length > 0 ? resultSet.join(', ') : '∅'}}
+                </text>
+                <text x="15" y="55" class="result-info" font-weight="bold" font-size="14" style="paint-order: stroke; stroke: white; stroke-width: 2; stroke-opacity: 0.7;">
+                  Мощность: |R| = {{resultSet.length}}
+                </text>
+              </g>
+
+
+              @if (highlightedSet) {
+                <g>
+                  <rect x="5" y="70" width="280" height="45" rx="8" fill="white" fill-opacity="0.95" [attr.stroke]="getCircleStroke(highlightedSet)" stroke-width="2"/>
+                  <text x="15" y="95" class="result-text" font-weight="bold" font-size="14" [attr.fill]="getCircleStroke(highlightedSet)" style="paint-order: stroke; stroke: white; stroke-width: 2; stroke-opacity: 0.7;">
+                    Множество {{highlightedSet}}: {{getSetElements(highlightedSet).length > 0 ? getSetElements(highlightedSet).join(', ') : '∅'}}
+                  </text>
+                  <text x="15" y="115" class="result-info" font-weight="bold" font-size="12" [attr.fill]="getCircleStroke(highlightedSet)" style="paint-order: stroke; stroke: white; stroke-width: 2; stroke-opacity: 0.7;">
+                    Мощность: |{{highlightedSet}}| = {{getSetElements(highlightedSet).length}}
+                  </text>
+                </g>
+              }
+            </svg>
+          </div>
+
+          <div class="diagram-controls">
+            <h4>Просмотр элементов:</h4>
+            <div class="view-set-buttons">
+              @for (setName of getAllSetsForLabels(); track setName) {
+                <button (click)="viewSet(setName)"
+                        [class.active]="highlightedSet === setName"
+                        [class]="'btn btn-set-' + setName.toLowerCase()"
+                        [disabled]="!usedSets.includes(setName)">
+                  Множество {{setName}}
+                </button>
+              }
+              <button (click)="viewResult()"
+                      [class.active]="!highlightedSet"
+                      class="btn btn-success">
+                Результат операции
+              </button>
+            </div>
+            @if (usedSets.length < 3) {
+              <p class="sets-limit-notice">
+                В выражении используются: {{usedSets.join(', ') || '—'}}
+              </p>
+            }
+          </div>
+        </div>
+
+        <div class="result-details">
+          <div class="operation-info">
+            <h4>Информация об операции:</h4>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Тип операции:</span>
+                <span class="info-value">{{getOperationTypeText()}}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Задействованные множества:</span>
+                <span class="info-value">{{usedSets.join(', ') || '—'}}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Элементов в результате:</span>
+                <span class="info-value">{{resultSet.length}}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Выражение:</span>
+                <span class="info-value expression">{{currentExpression || '—'}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <h4>Действия с результатом:</h4>
+            @if (resultSet.length > 0) {
+              <button (click)="saveResultAsSet()"
+                      class="btn btn-info">
+                Сохранить в множество
+              </button>
+            }
+            <button (click)="copyResultToClipboard()"
+                    class="btn btn-secondary">
+              Копировать результат
+            </button>
+          </div>
+
+          <div class="quick-operations">
+            <h4>Быстрые операции:</h4>
+            <div class="quick-buttons">
+              @for (op of getQuickOperations(); track op.label) {
+                <button (click)="quickOperation(op.expression)"
+                        class="btn btn-quick">
+                  {{op.label}}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <app-theory-panel
+    [topic]="'sets'"
+    [title]="'Теория множеств'"
+    [size]="'normal'"
+    [collapsible]="true"
+    [initiallyExpanded]="true">
+  </app-theory-panel>
+</div>

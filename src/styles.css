@@ -1,0 +1,41 @@
+/* You can add global styles to this file, and also import other style files */
+.theory-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+
+.theory-content th {
+  background: #3498db;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.theory-content td {
+  padding: 8px 10px;
+  border: 1px solid #dee2e6;
+}
+
+.theory-content tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+
+.math-formula {
+  font-family: "Times New Roman", serif;
+  font-style: italic;
+  background: #f8f9fa;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 5px 0;
+}
+
+.highlight {
+  background: #fff3cd;
+  padding: 10px 15px;
+  border-left: 4px solid #ffc107;
+  margin: 15px 0;
+  border-radius: 0 4px 4px 0;
+}

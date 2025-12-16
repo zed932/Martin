@@ -1,0 +1,133 @@
+.header {
+  background: #2c3e50;
+  color: white;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+}
+
+.logo-link {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ЭТО ОСНОВНОЙ СЕЛЕКТОР - меняем цвет здесь */
+.header-title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #ffffff; /* ИЗМЕНИТЕ ЭТОТ ЦВЕТ на нужный вам */
+}
+
+/* Если у вас есть подзаголовок */
+.header-subtitle {
+  margin-top: 3px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.user-info {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.user-role {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.role-admin {
+  background: rgba(231, 76, 60, 0.2);
+  color: #ff7979;
+  border: 1px solid #e74c3c;
+}
+
+.role-student {
+  background: rgba(46, 204, 113, 0.2);
+  color: #6cffb3;
+  border: 1px solid #2ecc71;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-logout {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.7rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .nav-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-logout {
+    padding: 0.5rem 1rem;
+  }
+}

@@ -1,0 +1,81 @@
+<div class="theory-panel {{getPanelSizeClass()}}"
+     [class.collapsible]="collapsible"
+     [class.expanded]="isExpanded">
+</div>
+  <!-- Заголовок панели -->
+  @if (showTitle) {
+    <div class="panel-header" (click)="toggleExpanded()" [class.clickable]="collapsible">
+      <div class="header-content">
+        <span class="topic-icon">{{ getTopicIcon() }}</span>
+        <h3 class="panel-title">{{ title }}</h3>
+      </div>
+
+      @if (collapsible) {
+        <span class="expand-icon">
+          {{ isExpanded ? '▼' : '▶' }}
+        </span>
+      }
+    </div>
+  }
+
+  <!-- Содержимое панели -->
+  <div class="panel-content" [style.max-height]="isExpanded ? 'none' : maxHeight">
+
+    <!-- Состояние загрузки -->
+    @if (isLoading) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Загрузка теоретического материала...</p>
+      </div>
+    }
+
+    <!-- Сообщение об ошибке -->
+    @if (error && !isLoading) {
+      <div class="error-state">
+        <span class="error-icon">⚠️</span>
+        <p>{{ error }}</p>
+        <button class="retry-btn" (click)="loadTheory()">Повторить попытку</button>
+      </div>
+    }
+
+    <!-- Пустое состояние -->
+    @if (!isLoading && !error && sections.length === 0) {
+      <div class="empty-state">
+        <p>Теоретический материал по этой теме пока не добавлен.</p>
+        <p class="hint">Администратор добавит материалы в ближайшее время.</p>
+      </div>
+    }
+
+    <!-- Отображение разделов теории -->
+    @if (!isLoading && !error && sections.length > 0) {
+      <div class="sections-container">
+        @for (section of sections; track section.id) {
+          <div class="theory-section">
+            <h4 class="section-title">{{ section.title }}</h4>
+            <div class="section-content" [innerHTML]="section.content"></div>
+            @if (sections.length > 1) {
+              <div class="section-footer">
+                <small class="update-date">
+                  Обновлено: {{ section.updatedAt | date:'dd.MM.yyyy' }}
+                </small>
+              </div>
+            }
+          </div>
+
+          @if (!$last) {
+            <hr class="section-divider">
+          }
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Футер панели (только в развернутом состоянии) -->
+  @if (isExpanded && sections.length > 0) {
+    <div class="panel-footer">
+      <small class="footer-text">
+        Теория будет обновляться и дополняться. Для вопросов обращайтесь к администратору.
+      </small>
+    </div>
+  }
+

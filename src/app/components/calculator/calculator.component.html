@@ -1,0 +1,60 @@
+<div class="calculator-page">
+  <h2>Обычный калькулятор</h2>
+  <div class="calculator">
+    <div class="calculator-display">
+      <input type="text"
+             [(ngModel)]="displayValue"
+             readonly
+             class="display-field">
+    </div>
+
+    <div class="calculator-buttons">
+      <!-- Первый ряд -->
+      <div class="button-row">
+        <button (click)="clear()" class="calc-btn btn-clear">C</button>
+        <button (click)="backspace()" class="calc-btn btn-clear">⌫</button>
+        <button (click)="appendOperator('/')" class="calc-btn btn-operator">/</button>
+        <button (click)="appendOperator('*')" class="calc-btn btn-operator">×</button>
+      </div>
+
+      <!-- Второй ряд -->
+      <div class="button-row">
+        <button (click)="appendNumber('7')" class="calc-btn btn-number">7</button>
+        <button (click)="appendNumber('8')" class="calc-btn btn-number">8</button>
+        <button (click)="appendNumber('9')" class="calc-btn btn-number">9</button>
+        <button (click)="appendOperator('-')" class="calc-btn btn-operator">-</button>
+      </div>
+
+      <!-- Третий ряд -->
+      <div class="button-row">
+        <button (click)="appendNumber('4')" class="calc-btn btn-number">4</button>
+        <button (click)="appendNumber('5')" class="calc-btn btn-number">5</button>
+        <button (click)="appendNumber('6')" class="calc-btn btn-number">6</button>
+        <button (click)="appendOperator('+')" class="calc-btn btn-operator">+</button>
+      </div>
+
+      <!-- Четвертый ряд -->
+      <div class="button-row">
+        <button (click)="appendNumber('1')" class="calc-btn btn-number">1</button>
+        <button (click)="appendNumber('2')" class="calc-btn btn-number">2</button>
+        <button (click)="appendNumber('3')" class="calc-btn btn-number">3</button>
+        <button (click)="calculate()" class="calc-btn btn-equals">=</button>
+      </div>
+
+      <!-- Пятый ряд -->
+      <div class="button-row">
+        <button (click)="appendNumber('0')" class="calc-btn btn-number btn-zero">0</button>
+        <button (click)="appendDecimal()" class="calc-btn btn-number">.</button>
+      </div>
+    </div>
+  </div>
+  <div class="theory-section-after">
+    <app-theory-panel
+      [topic]="'calculator'"
+      [title]="'Теория арифметики'"
+      [size]="'normal'"
+      [collapsible]="true"
+      [initiallyExpanded]="true">
+    </app-theory-panel>
+  </div>
+</div>

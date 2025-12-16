@@ -1,0 +1,131 @@
+.calculator-page {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box; /* Добавляем */
+}
+
+.calculator {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+  box-sizing: border-box; /* Добавляем */
+  width: 100%; /* Гарантируем, что не вылезает */
+}
+
+.display-field {
+  width: 100%;
+  height: 60px;
+  font-size: 1.8rem;
+  text-align: right;
+  padding: 0 15px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  background: #f8f9fa;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  box-sizing: border-box; /* Важное исправление */
+  max-width: 100%; /* Предотвращаем переполнение */
+}
+
+.calculator-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%; /* Гарантируем ширину */
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  width: 100%; /* Гарантируем ширину */
+}
+
+.calc-btn {
+  flex: 1;
+  height: 50px;
+  font-size: 1.1rem;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  background: white;
+  color: #2c3e50;
+  transition: all 0.2s;
+  min-width: 0; /* Позволяет кнопкам сжиматься */
+  box-sizing: border-box; /* Учитываем границы в ширине */
+}
+
+.calc-btn:hover {
+  background: #f8f9fa;
+}
+
+.btn-operator {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.btn-clear {
+  background: #f8f9fa;
+  color: #2c3e50;
+}
+
+.btn-equals {
+  background: #2c3e50;
+  color: white;
+  border-color: #2c3e50;
+}
+
+.btn-zero {
+  flex: 2;
+  min-width: 0; /* Позволяет кнопке 0 сжиматься */
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 480px) {
+  .calculator-page {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .calculator {
+    padding: 15px;
+  }
+
+  .display-field {
+    font-size: 1.5rem;
+    height: 50px;
+    padding: 0 10px;
+  }
+
+  .calc-btn {
+    height: 45px;
+    font-size: 1rem;
+  }
+
+  .button-row {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .calculator {
+    padding: 10px;
+  }
+
+  .display-field {
+    font-size: 1.3rem;
+    height: 45px;
+  }
+
+  .calc-btn {
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .button-row {
+    gap: 5px;
+  }
+}

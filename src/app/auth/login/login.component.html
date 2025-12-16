@@ -1,0 +1,90 @@
+<div class="login-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <h3>Вход в платформу</h3>
+    <p class="form-description">Войдите в свой аккаунт для доступа к обучающим материалам</p>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        class="form-control"
+        [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        placeholder="Введите ваш email"
+      />
+      @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+        <div class="error-message">
+          @if (loginForm.get('email')?.errors?.['required']) {
+            <span>Email обязателен</span>
+          }
+          @if (loginForm.get('email')?.errors?.['email']) {
+            <span>Введите корректный email</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="password">Пароль</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        class="form-control"
+        [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        placeholder="Введите пароль"
+      />
+      @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+        <div class="error-message">
+          @if (loginForm.get('password')?.errors?.['required']) {
+            <span>Пароль обязателен</span>
+          }
+          @if (loginForm.get('password')?.errors?.['minlength']) {
+            <span>Минимальная длина пароля - 6 символов</span>
+          }
+        </div>
+      }
+    </div>
+
+    @if (errorMessage) {
+      <div class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <button
+      type="submit"
+      class="btn btn-primary btn-block"
+      [disabled]="loginForm.invalid || isLoading"
+    >
+      @if (isLoading) {
+        <span>Вход...</span>
+      } @else {
+        <span>Войти</span>
+      }
+    </button>
+
+    <div class="text-center mt-3">
+      <p>Нет аккаунта? <a routerLink="/auth/registration" class="link">Зарегистрироваться как студент</a></p>
+    </div>
+
+    <!-- Быстрый вход для демонстрации -->
+    <div class="quick-login-section">
+      <h4>Демо-аккаунты:</h4>
+      <div class="quick-login-buttons">
+        <button (click)="quickLogin('admin')" class="btn btn-admin">
+          Войти как Администратор
+        </button>
+        <button (click)="quickLogin('student')" class="btn btn-student">
+          🎓 Войти как Студент
+        </button>
+      </div>
+      <div class="demo-credentials">
+        <p><strong>Администратор:</strong> admin.edu.ru / admin123</p>
+        <p><strong>Студент:</strong> student.edu.ru / student123</p>
+        <p class="note">* Студент автоматически создается при первом входе</p>
+      </div>
+    </div>
+  </form>
+</div>

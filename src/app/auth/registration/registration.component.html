@@ -1,0 +1,147 @@
+<div class="registration-container">
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+    <h3>Регистрация студента</h3>
+    <p class="form-description">Создайте аккаунт для доступа к обучающим материалам и тестам</p>
+
+    <div class="form-group">
+      <label for="name">Полное имя</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        class="form-control"
+        [class.is-invalid]="registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched"
+        placeholder="Введите ваше имя и фамилию"
+      />
+      @if (registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched) {
+        <div class="error-message">
+          <span>Имя обязательно</span>
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        class="form-control"
+        [class.is-invalid]="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched"
+        placeholder="Введите ваш email"
+      />
+      @if (registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched) {
+        <div class="error-message">
+          @if (registrationForm.get('email')?.errors?.['required']) {
+            <span>Email обязателен</span>
+          }
+          @if (registrationForm.get('email')?.errors?.['email']) {
+            <span>Введите корректный email</span>
+          }
+          @if (registrationForm.get('email')?.errors?.['containsAdmin']) {
+            <span>Email не может содержать "admin"</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="password">Пароль</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        class="form-control"
+        [class.is-invalid]="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched"
+        placeholder="Придумайте пароль (минимум 6 символов)"
+      />
+      @if (registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched) {
+        <div class="error-message">
+          @if (registrationForm.get('password')?.errors?.['required']) {
+            <span>Пароль обязателен</span>
+          }
+          @if (registrationForm.get('password')?.errors?.['minlength']) {
+            <span>Минимальная длина пароля - 6 символов</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword">Подтверждение пароля</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        class="form-control"
+        [class.is-invalid]="registrationForm.get('confirmPassword')?.invalid && registrationForm.get('confirmPassword')?.touched"
+        placeholder="Повторите пароль"
+      />
+      @if (registrationForm.get('confirmPassword')?.invalid && registrationForm.get('confirmPassword')?.touched) {
+        <div class="error-message">
+          @if (registrationForm.get('confirmPassword')?.errors?.['required']) {
+            <span>Подтверждение пароля обязательно</span>
+          }
+          @if (registrationForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
+            <span>Пароли не совпадают</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <div class="form-check">
+        <input
+          type="checkbox"
+          id="terms"
+          formControlName="terms"
+          class="form-check-input"
+        />
+        <label for="terms" class="form-check-label">
+          Я соглашаюсь с <a href="#" class="terms-link">условиями использования</a> и
+          <a href="#" class="terms-link">политикой конфиденциальности</a>
+        </label>
+      </div>
+      @if (registrationForm.get('terms')?.invalid && registrationForm.get('terms')?.touched) {
+        <div class="error-message">
+          <span>Необходимо принять условия использования</span>
+        </div>
+      }
+    </div>
+
+    @if (errorMessage) {
+      <div class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+    }
+
+    @if (successMessage) {
+      <div class="alert alert-success">
+        {{ successMessage }}
+      </div>
+    }
+
+    <button
+      type="submit"
+      class="btn btn-primary btn-block"
+      [disabled]="registrationForm.invalid || isLoading"
+    >
+      @if (isLoading) {
+        <span>Регистрация...</span>
+      } @else {
+        <span>Зарегистрироваться как студент</span>
+      }
+    </button>
+
+    <div class="text-center mt-3">
+      <p>Уже есть аккаунт? <a routerLink="/auth/login" class="link">Войти</a></p>
+    </div>
+
+    <div class="role-info">
+      <p class="info-text">
+        <strong>Важно:</strong> Все новые пользователи регистрируются только как студенты.
+        Администраторы платформы назначаются отдельно.
+      </p>
+    </div>
+  </form>
+</div>

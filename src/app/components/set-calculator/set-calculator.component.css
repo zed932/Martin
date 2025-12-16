@@ -1,0 +1,298 @@
+.set-calculator-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-sizing: border-box;
+}
+
+h2 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 15px;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+/* Layout */
+.calculator-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 1024px) {
+  .calculator-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Панели */
+.sets-panel, .expression-panel, .results-panel {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+  border: 1px solid #e9ecef;
+  box-sizing: border-box;
+}
+
+h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Управление множествами */
+.add-set-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.set-select, .elements-input {
+  padding: 10px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  width: 100%;
+  background: white;
+}
+
+.set-select:focus, .elements-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+.set-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.sets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.set-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.set-item:hover {
+  border-color: #3498db;
+}
+
+.set-name {
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 14px;
+  font-family: 'SF Mono', monospace;
+  flex: 1;
+}
+
+.set-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.set-cardinality {
+  color: #6c757d;
+  font-size: 13px;
+}
+
+.btn-small {
+  padding: 4px 8px;
+  font-size: 13px;
+  min-height: auto;
+  border-radius: 4px;
+}
+
+/* Кнопки */
+.btn {
+  padding: 10px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  background: white;
+  color: #2c3e50;
+  box-sizing: border-box;
+}
+
+.btn:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #3498db;
+}
+
+.btn.active {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+/* Ввод выражения */
+.expression-display {
+  margin-bottom: 15px;
+}
+
+.expression-input {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background: white;
+  font-family: 'SF Mono', monospace;
+  color: #2c3e50;
+  box-sizing: border-box;
+  text-align: center;
+  min-height: 60px;
+  resize: none;
+}
+
+.expression-keypad {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.keypad-row {
+  display: flex;
+  gap: 8px;
+}
+
+.keypad-row .btn {
+  flex: 1;
+  min-width: calc(25% - 8px);
+}
+
+.keypad-row .btn-calculate {
+  flex: 2;
+  background: #2c3e50;
+  color: white;
+  border-color: #2c3e50;
+}
+
+/* Цвета кнопок */
+.btn-primary {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border-color: #6c757d;
+}
+
+.btn-calculate, .btn-success {
+  background: #2c3e50;
+  color: white;
+  border-color: #2c3e50;
+}
+
+.btn-clear {
+  background: #f8f9fa;
+  color: #2c3e50;
+  border-color: #e9ecef;
+}
+
+/* Результаты */
+.results-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .results-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Диаграмма Эйлера */
+.euler-diagrams {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.euler-diagram svg {
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+/* Цвета для диаграммы */
+.circle-outline {
+  fill: none;
+  stroke-width: 2;
+}
+
+.set-label {
+  font-size: 24px;
+  font-weight: 500;
+  fill: #2c3e50;
+}
+
+.element-text {
+  font-size: 13px;
+  fill: #2c3e50;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .set-calculator-container {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  .sets-panel, .expression-panel, .results-panel {
+    padding: 15px;
+  }
+}
+
+.theory-section-after {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #e9ecef;
+}

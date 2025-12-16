@@ -1,0 +1,118 @@
+/* Глобальные стили */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  line-height: 1.6;
+}
+
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: calc(100vh - 80px);
+}
+
+/* Общие стили для кнопок */
+.btn {
+  padding: 10px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+  background: white;
+  color: #2c3e50;
+}
+
+.btn:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #3498db;
+}
+
+.btn-primary {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border-color: #6c757d;
+}
+
+.btn-success {
+  background: #2c3e50;
+  color: white;
+  border-color: #2c3e50;
+}
+
+/* Стили для форм */
+input, select, textarea {
+  padding: 10px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  transition: border 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+/* Теория */
+.theory-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border: 1px solid #e9ecef;
+}
+
+.theory-content th {
+  background: #2c3e50;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.theory-content td {
+  padding: 10px 12px;
+  border: 1px solid #e9ecef;
+}
+
+.theory-content tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.math-formula {
+  font-family: 'SF Mono', monospace;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border-left: 3px solid #3498db;
+  margin: 10px 0;
+}
+
+.highlight {
+  background: #f8f9fa;
+  padding: 12px 15px;
+  border-left: 3px solid #3498db;
+  margin: 15px 0;
+}
+
+/* Утилиты */
+.text-center { text-align: center; }
+.mt-20 { margin-top: 20px; }
+.mb-20 { margin-bottom: 20px; }
+.hidden { display: none; }
