@@ -335,12 +335,26 @@ export class TestComponent implements OnInit, OnDestroy {
         throw new Error('Тест не загружен');
       }
 
-      // Собираем ответы в правильном порядке
+      if (!this.test.id) {
+        throw new Error('ID теста не найден');
+      }
+
+      // Собираем ответы
       const answers: string[] = [];
       for (let i = 0; i < (this.test.questions?.length || 0); i++) {
         const control = this.testForm.get(`question_${i}`);
-        answers.push(control?.value || '');
+        const value = control?.value || '';
+
+        // Для текстовых ответов сохраняем как есть
+        // Для одиночных/множественных - как строку с индексами
+        answers.push(value);
       }
+
+      console.log('Отправка теста:', {
+        testId: this.test.id,
+        answers,
+        timeSpent: Math.floor(timeSpent)
+      });
 
       const submission = {
         testId: this.test.id,
@@ -349,13 +363,22 @@ export class TestComponent implements OnInit, OnDestroy {
       };
 
       const response = await lastValueFrom(this.apiService.submitTest(submission));
+
       if (response.success && response.data) {
-        alert(`Тест завершен! Ваш результат: ${response.data.score}%\nОценка: ${response.data.grade || 'не определено'}`);
-        this.goBack();
+        console.log('Результат теста:', response.data);
+
+        // Перенаправляем на страницу результатов
+        this.router.navigate(['/my-test-results'], {
+          queryParams: {
+            testId: this.test.id,
+            score: response.data.score
+          }
+        });
       } else {
         this.errorMessage = response.message || 'Ошибка при отправке теста';
       }
     } catch (error: any) {
+      console.error('Ошибка отправки теста:', error);
       this.errorMessage = error.message || 'Ошибка при отправке теста';
       this.isSubmitting = false;
     }

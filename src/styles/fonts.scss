@@ -1,0 +1,11 @@
+/* Подключение шрифта */
+@font-face {
+  font-family: 'Gorizont'; // Укажите имя шрифта
+  src: url('../assets/fonts/gorizont/ALSGorizont22VF-LightExpanded.woff2') format('woff2'),
+  url('../assets/fonts/gorizont/ALSGorizont22VF-LightExpanded.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Или если хотите использовать другой шрифт, например из папки fonts/Golos или fonts/neue-machina */

@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import './styles/fonts.scss';
+
 .theory-content table {
   width: 100%;
   border-collapse: collapse;
@@ -47,4 +49,16 @@
   border-left: 4px solid #ffc107;
   margin: 15px 0;
   border-radius: 0 4px 4px 0;
+}
+
+/* Примените шрифт ко всем элементам */
+* {
+  font-family: 'Gorizont', sans-serif;
+}
+
+/* Или более специфично */
+body {
+  font-family: 'Gorizont', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

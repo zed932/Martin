@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, tap } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
@@ -361,16 +361,6 @@ export class ApiService {
     );
   }
 
-  // Отправить результаты теста
-  submitTest(submission: TestSubmission): Observable<ApiResponse<TestResult>> {
-    return this.http.post<ApiResponse<TestResult>>(
-      `${this.apiUrl}/tests/${submission.testId}/submit`,
-      submission
-    ).pipe(
-      catchError(this.handleError)
-    );
-  }
-
   // Получить все результаты тестов (для администратора)
   getAllTestResults(): Observable<ApiResponse<TestResultResponse[]>> {
     return this.http.get<ApiResponse<TestResultResponse[]>>(
@@ -381,13 +371,47 @@ export class ApiService {
     );
   }
 
-  // Получить результаты тестов текущего пользователя
-  getUserTestResults(): Observable<ApiResponse<TestResultResponse[]>> {
-    return this.http.get<ApiResponse<TestResultResponse[]>>(
-      `${this.apiUrl}/test-results/user`,
-      { headers: this.getAuthHeaders() }
+  // В api.service.ts добавьте логирование:
+  // В api.service.ts, исправьте метод submitTest:
+  submitTest(data: any): Observable<ApiResponse<any>> {
+    console.log('Отправка теста на сервер:', {
+      url: `${this.apiUrl}/tests/submit`,
+      data: data,
+      headers: this.getAuthHeaders()
+    });
+
+    return this.http.post<ApiResponse<any>>(
+      `${this.apiUrl}/tests/submit`,
+      data,
+      {
+        headers: this.getAuthHeaders()
+      }
     ).pipe(
-      catchError(this.handleError)
+      tap((response: ApiResponse) => {
+        console.log('УСПЕШНЫЙ ответ от сервера:', response);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error('ОШИБКА отправки теста:', {
+          status: error.status,
+          statusText: error.statusText,
+          url: error.url,
+          error: error.error
+        });
+        return throwError(() => new Error(`Ошибка ${error.status}: ${error.statusText}`));
+      })
+    );
+  }
+
+  getUserTestResults(): Observable<ApiResponse<TestResultResponse[]>> {
+    console.log('Запрос результатов пользователя');
+    return this.http.get<ApiResponse<TestResultResponse[]>>(`${this.apiUrl}/test-results/user`, {
+      headers: this.getAuthHeaders() // Добавьте заголовки авторизации
+    }).pipe(
+      tap((response: ApiResponse<TestResultResponse[]>) => console.log('Результаты пользователя:', response)),
+      catchError(error => {
+        console.error('Ошибка загрузки результатов:', error);
+        return throwError(() => error);
+      })
     );
   }
 

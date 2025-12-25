@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { ApiService, TestResponse } from '../../services/api.service';
+import { ApiService, TestResponse, TestResultResponse } from '../../services/api.service';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
@@ -13,7 +13,8 @@ import { lastValueFrom } from 'rxjs';
 })
 export class TestsListComponent implements OnInit {
   tests: TestResponse[] = [];
-  filteredTests: TestResponse[] = [];
+  filteredTests: any[] = []; // Изменим тип для хранения доп. данных
+  userTestResults: TestResultResponse[] = []; // ДОБАВЬТЕ ЭТУ СТРОКУ
   isLoading = false;
   errorMessage = '';
 
@@ -44,6 +45,34 @@ export class TestsListComponent implements OnInit {
 
   async ngOnInit() {
     await this.loadTests();
+    await this.loadUserResults();
+  }
+
+  async loadUserResults() {
+    try {
+      const response = await lastValueFrom(this.apiService.getUserTestResults());
+      if (response.success) {
+        this.userTestResults = response.data || [];
+        this.filterTests(); // Обновляем фильтрацию после загрузки результатов
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки результатов:', error);
+    }
+  }
+
+  filterTests() {
+    this.filteredTests = this.tests.map(test => {
+      const userResult = this.userTestResults?.find((result: TestResultResponse) => result.testId === test.id);
+      return {
+        ...test,
+        userScore: userResult?.score,
+        isCompleted: !!userResult
+      };
+    }).filter(test => {
+      const topicMatch = this.selectedTopic === 'all' || test.topic === this.selectedTopic;
+      const difficultyMatch = this.selectedDifficulty === 'all' || test.difficulty === this.selectedDifficulty;
+      return topicMatch && difficultyMatch;
+    });
   }
 
   async loadTests() {
@@ -53,10 +82,9 @@ export class TestsListComponent implements OnInit {
     try {
       const response = await lastValueFrom(this.apiService.getAllTests());
       if (response.success) {
-        // Фильтруем только активные тесты для студентов
         this.tests = (response.data || [])
           .filter(test => test.isActive);
-        this.filteredTests = [...this.tests];
+        this.filterTests(); // Используем новый метод фильтрации
       } else {
         this.errorMessage = response.message || 'Не удалось загрузить тесты';
       }
@@ -65,14 +93,6 @@ export class TestsListComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
-  }
-
-  filterTests() {
-    this.filteredTests = this.tests.filter(test => {
-      const topicMatch = this.selectedTopic === 'all' || test.topic === this.selectedTopic;
-      const difficultyMatch = this.selectedDifficulty === 'all' || test.difficulty === this.selectedDifficulty;
-      return topicMatch && difficultyMatch;
-    });
   }
 
   onTopicChange(event: Event) {
