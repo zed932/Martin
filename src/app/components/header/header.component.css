@@ -1,133 +1,357 @@
+/* Header Component - Flat Design */
 .header {
-  background: #2c3e50;
-  color: white;
+  background: var(--color-white);
+  color: var(--color-black);
   padding: 0;
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--color-gray-200);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .header-content {
-  max-width: 1200px;
+  max-width: var(--container-xl);
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: var(--space-3) var(--space-4);
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .logo-link {
-  color: inherit;
+  color: var(--color-black);
   text-decoration: none;
-  display: flex;
-  flex-direction: column;
+  transition: opacity var(--transition-fast);
 }
 
-/* ЭТО ОСНОВНОЙ СЕЛЕКТОР - меняем цвет здесь */
+.logo-link:hover {
+  opacity: 0.8;
+}
+
+/* Основной заголовок - более жирный */
 .header-title {
   margin: 0;
-  font-size: 1.3rem;
-  font-weight: 500;
-  color: #ffffff; /* ИЗМЕНИТЕ ЭТОТ ЦВЕТ на нужный вам */
-}
-
-/* Если у вас есть подзаголовок */
-.header-subtitle {
-  margin-top: 3px;
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--font-size-xl);
+  font-weight: 400; /* Увеличили жирность (было 300) */
+  color: var(--color-black);
+  letter-spacing: -0.02em;
 }
 
 .user-info {
-  margin-top: 5px;
-  font-size: 0.9rem;
   display: flex;
-  gap: 10px;
+  gap: var(--space-2);
   align-items: center;
+  font-size: var(--font-size-sm);
 }
 
 .user-name {
   font-weight: 600;
+  color: #ced4da; /* Темнее для лучшей видимости */
 }
 
 .user-role {
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 0.8rem;
+  padding: 2px 8px; /* Возвращаем оригинальные значения */
+  border-radius: 10px; /* Возвращаем оригинальные скругления */
+  font-size: 0.8rem; /* Возвращаем оригинальный размер */
   font-weight: 500;
+  min-width: auto; /* Убираем ограничение ширины */
 }
 
 .role-admin {
-  background: rgba(231, 76, 60, 0.2);
-  color: #ff7979;
-  border: 1px solid #e74c3c;
+  background: rgba(249, 136, 159, 0.15); /* Tart Orange с прозрачностью */
+  color: #F9889F; /* Tart Orange */
+  border: 1px solid rgba(249, 136, 159, 0.3);
 }
 
 .role-student {
-  background: rgba(46, 204, 113, 0.2);
-  color: #6cffb3;
-  border: 1px solid #2ecc71;
+  background: rgba(167, 244, 50, 0.15); /* Green Lizard с прозрачностью */
+  color: #a7f432; /* Green Lizard */
+  border: 1px solid rgba(167, 244, 50, 0.3);
 }
 
+/* Навигация */
 .nav-menu {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-2);
   align-items: center;
 }
 
 .nav-link {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-gray-700);
   text-decoration: none;
-  padding: 0.7rem 1.2rem;
-  border-radius: 25px;
-  transition: all 0.3s ease;
-  font-weight: 500;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  font-weight: 400; /* Жирное начертание для навигации */
+  border: 1px solid transparent;
+  white-space: nowrap;
 }
 
 .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: var(--color-gray-50);
+  color: var(--color-black);
+  border-color: var(--color-gray-300);
 }
 
 .nav-link.active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background: var(--color-black);
+  color: var(--color-white);
+  border-color: var(--color-black);
+  font-weight: 400;
+}
+
+.admin-link.active {
+  border: 2px solid #3C59FF; /* Blueiful - акцентный цвет */
+  background: transparent; /* Прозрачный фон, чтобы не сливался */
+}
+
+.admin-link:hover {
+  background: var(--color-gray-100);
+}
+
+/* Кнопки */
+.btn {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
+  border-radius: var(--radius-md);
+  border: 2px solid;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-family: inherit;
+  font-weight: 400;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--color-black);
+  color: var(--color-black);
+  font-weight: 400;
+}
+
+.btn-outline:hover {
+  background: var(--color-black);
+  color: var(--color-white);
 }
 
 .btn-logout {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 0.7rem 1.5rem;
-  border-radius: 25px;
+  background: var(--color-gray-50);
+  color: var(--color-gray-700);
+  border: 1px solid var(--color-gray-200);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  font-weight: 400;
+  transition: all var(--transition-normal);
+  margin-left: var(--space-2);
+  font-family: inherit;
 }
 
 .btn-logout:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-gray-100);
+  color: var(--color-black);
+  border-color: var(--color-gray-300);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .nav-menu {
+    gap: var(--space-1);
+  }
+
+  .nav-link {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  .btn-logout {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-sm);
+  }
 }
 
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    align-items: flex-start;
+  }
+
+  .logo-section {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .header-title {
+    font-size: var(--font-size-lg);
   }
 
   .nav-menu {
+    width: 100%;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
+    justify-content: flex-start;
+    gap: var(--space-1);
   }
 
   .nav-link {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  .btn-outline {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-sm);
   }
 
   .btn-logout {
-    padding: 0.5rem 1rem;
+    margin-left: 0;
+    margin-top: var(--space-1);
+  }
+
+  /* Прячем эмодзи на мобильных для экономии места */
+  .nav-link:has(> :first-child:is(span):not(:empty))::before {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: var(--space-2);
+  }
+
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .nav-link {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .btn-outline {
+    width: 100%;
+  }
+
+  /* Для очень маленьких экранов прячем длинные тексты */
+  .nav-link:not(.active):not(:hover) {
+    max-width: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Анимация для активного состояния */
+@keyframes navLinkActive {
+  0% {
+    transform: translateY(-2px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.nav-link.active {
+  animation: navLinkActive 0.3s ease;
+}
+
+/* Доступность - focus states */
+.nav-link:focus,
+.btn:focus,
+.btn-logout:focus {
+  outline: 2px solid var(--color-warning);
+  outline-offset: 2px;
+}
+
+/* Улучшаем видимость для пользователей с повышенными требованиями к контрасту */
+@media (prefers-contrast: high) {
+  .nav-link {
+    border-width: 2px;
+  }
+
+  .nav-link.active {
+    background: var(--color-black);
+    color: var(--color-white);
+    border: 2px solid var(--color-black);
+  }
+
+  .btn-logout {
+    border-width: 2px;
+  }
+}
+
+/* Тёмная тема (если понадобится) */
+@media (prefers-color-scheme: dark) {
+  .header {
+    background: var(--color-black);
+    color: var(--color-white);
+    border-bottom: 2px solid var(--color-gray-800);
+  }
+
+  .logo-link,
+  .header-title {
+    color: var(--color-white);
+  }
+
+  .nav-link {
+    color: var(--color-gray-300);
+  }
+
+  .nav-link:hover {
+    background: var(--color-gray-900);
+    color: var(--color-white);
+  }
+
+  .nav-link.active {
+    background: var(--color-white);
+    color: var(--color-black);
+    border-color: var(--color-white);
+  }
+
+  .btn-outline {
+    border-color: var(--color-white);
+    color: var(--color-white);
+  }
+
+  .btn-outline:hover {
+    background: var(--color-white);
+    color: var(--color-black);
+  }
+
+  .btn-logout {
+    background: var(--color-gray-900);
+    color: var(--color-gray-300);
+    border-color: var(--color-gray-700);
+  }
+
+  .btn-logout:hover {
+    background: var(--color-gray-800);
+    color: var(--color-white);
+  }
+
+  .user-role.role-student {
+    background: var(--color-gray-800);
+    color: var(--color-gray-300);
+    border-color: var(--color-gray-700);
   }
 }

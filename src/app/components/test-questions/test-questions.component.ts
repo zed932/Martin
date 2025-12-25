@@ -126,85 +126,320 @@ import { Question } from '../../services/api.service';
   `,
   styles: [`
     .questions-editor {
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 20px 0;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin: var(--space-4) 0;
+      background: var(--color-white);
     }
+
     .questions-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-gray-200);
     }
+
+    .questions-header h5 {
+      margin: 0;
+      font-size: var(--font-size-lg);
+      font-weight: 400;
+      color: var(--color-black);
+    }
+
     .btn-add-question {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
+      background: var(--color-black);
+      color: var(--color-white);
+      border: 2px solid var(--color-black);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-md);
       cursor: pointer;
+      font-size: var(--font-size-sm);
+      font-weight: 400;
+      transition: all var(--transition-normal);
+      white-space: nowrap;
+      min-height: 2.5rem;
     }
+
+    .btn-add-question:hover:not(:disabled) {
+      background: var(--color-gray-800);
+      border-color: var(--color-gray-800);
+      transform: translateY(-1px);
+    }
+
+    .questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
     .question-card {
-      border: 1px solid #e9ecef;
-      border-radius: 6px;
-      padding: 15px;
-      margin-bottom: 15px;
-      background: #f8f9fa;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      background: var(--color-white);
+      transition: border-color var(--transition-normal);
     }
+
+    .question-card:hover {
+      border-color: var(--color-gray-300);
+    }
+
     .question-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: var(--space-3);
     }
+
     .question-number {
-      font-weight: bold;
-      color: #495057;
+      font-weight: 500;
+      color: var(--color-black);
+      font-size: var(--font-size-sm);
     }
+
     .btn-remove-question {
-      background: #dc3545;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
+      background: transparent;
+      color: var(--color-tart-orange);
+      border: 1px solid var(--color-tart-orange);
+      border-radius: var(--radius-sm);
+      width: 1.5rem;
+      height: 1.5rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.8rem;
+      transition: all var(--transition-fast);
+      padding: 0;
     }
+
+    .btn-remove-question:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--color-tart-orange) 10%, transparent);
+    }
+
+    .btn-remove-question:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .question-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .form-group {
+      margin-bottom: 0;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--space-1);
+      color: var(--color-gray-800);
+      font-size: var(--font-size-sm);
+      font-weight: 400;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: var(--space-2);
+      border: 1px solid var(--color-gray-300);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      font-family: inherit;
+      box-sizing: border-box;
+      background: var(--color-white);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--color-black);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 4rem;
+      line-height: 1.4;
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      background-size: 1rem;
+      padding-right: 2rem;
+    }
+
+    .invalid-feedback {
+      color: var(--color-tart-orange);
+      font-size: var(--font-size-xs);
+      margin-top: var(--space-1);
+      display: block;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+    }
+
     .option-row {
       display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: var(--space-2);
+      align-items: center;
     }
+
+    .form-control-sm {
+      flex: 1;
+      min-width: 0;
+    }
+
     .btn-remove-option {
-      background: #6c757d;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      background: transparent;
+      color: var(--color-gray-600);
+      border: 1px solid var(--color-gray-300);
+      border-radius: var(--radius-sm);
+      width: 1.8rem;
+      height: 1.8rem;
       cursor: pointer;
-      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
     }
+
+    .btn-remove-option:hover:not(:disabled) {
+      background: var(--color-gray-100);
+      border-color: var(--color-gray-400);
+    }
+
+    .btn-remove-option:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
     .btn-add-option {
-      background: #28a745;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
+      background: transparent;
+      color: var(--color-gray-700);
+      border: 1px dashed var(--color-gray-400);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-md);
       cursor: pointer;
-      margin-top: 10px;
+      font-size: var(--font-size-xs);
+      transition: all var(--transition-fast);
+      align-self: flex-start;
     }
+
+    .btn-add-option:hover {
+      background: var(--color-gray-50);
+      border-style: solid;
+      border-color: var(--color-gray-500);
+    }
+
     .multiple-answers {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      background: var(--color-gray-50);
     }
+
     .checkbox-label {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      color: var(--color-gray-700);
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .questions-editor {
+        padding: var(--space-3);
+      }
+
+      .questions-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-2);
+      }
+
+      .questions-header h5 {
+        font-size: var(--font-size-base);
+      }
+
+      .btn-add-question {
+        width: 100%;
+      }
+
+      .question-card {
+        padding: var(--space-3);
+      }
+
+      .option-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-remove-option {
+        align-self: flex-start;
+        width: 2rem;
+      }
+
+      .form-control-sm {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .questions-editor {
+        padding: var(--space-2);
+      }
+
+      .question-card {
+        padding: var(--space-2);
+      }
+
+      .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1);
+      }
+
+      .btn-remove-question {
+        align-self: flex-start;
+      }
+
+      .multiple-answers {
+        padding: var(--space-1);
+      }
+    }
+
+    @media (max-width: 340px) {
+      .form-group label {
+        font-size: 0.8rem;
+      }
+
+      .form-control {
+        font-size: 0.8rem;
+        padding: 0.4rem;
+      }
+
+      .checkbox-label {
+        font-size: 0.8rem;
+      }
     }
   `]
 })
