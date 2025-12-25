@@ -68,23 +68,5 @@
     <div class="text-center mt-3">
       <p>Нет аккаунта? <a routerLink="/auth/registration" class="link">Зарегистрироваться как студент</a></p>
     </div>
-
-    <!-- Быстрый вход для демонстрации -->
-    <div class="quick-login-section">
-      <h4>Демо-аккаунты:</h4>
-      <div class="quick-login-buttons">
-        <button (click)="quickLogin('admin')" class="btn btn-admin">
-          Войти как Администратор
-        </button>
-        <button (click)="quickLogin('student')" class="btn btn-student">
-          🎓 Войти как Студент
-        </button>
-      </div>
-      <div class="demo-credentials">
-        <p><strong>Администратор:</strong> admin.edu.ru / admin123</p>
-        <p><strong>Студент:</strong> student.edu.ru / student123</p>
-        <p class="note">* Студент автоматически создается при первом входе</p>
-      </div>
-    </div>
   </form>
 </div>

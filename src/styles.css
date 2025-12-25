@@ -21,6 +21,15 @@
   background: #f8f9fa;
 }
 
+.btn-outline {
+  background: transparent;
+  border: 2px solid currentColor;
+  color: currentColor;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
 
 .math-formula {
   font-family: "Times New Roman", serif;

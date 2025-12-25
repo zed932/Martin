@@ -2,7 +2,9 @@
   <div class="header-content">
     <div class="logo-section">
       <h1 class="header-title">
-        <a routerLink="/calculator" class="logo-link">Обучающая платформа</a>
+        <a [routerLink]="user ? '/calculator' : '/'" class="logo-link">
+          Обучающая платформа
+        </a>
       </h1>
       @if (user) {
         <div class="user-info">
@@ -16,34 +18,42 @@
     </div>
 
     <nav class="nav-menu">
-      <a routerLink="/calculator"
-         routerLinkActive="active"
-         class="nav-link">
-        🧮 Калькулятор
-      </a>
-      <a routerLink="/set-calculator"
-         routerLinkActive="active"
-         class="nav-link">
-        Калькулятор множеств
-      </a>
-      <a routerLink="/matrix-calculator"
-         routerLinkActive="active"
-         class="nav-link">
-        Калькулятор матриц
-      </a>
-
-      @if (isAdmin) {
-        <!-- Изменяем ссылку на админ-панель -->
-        <a routerLink="/admin/dashboard"
+      @if (user) {
+        <a routerLink="/calculator"
            routerLinkActive="active"
-           class="nav-link admin-link">
-          Админ-панель
+           class="nav-link">
+          🧮 Калькулятор
+        </a>
+        <a routerLink="/set-calculator"
+           routerLinkActive="active"
+           class="nav-link">
+          Калькулятор множеств
+        </a>
+        <a routerLink="/matrix-calculator"
+           routerLinkActive="active"
+           class="nav-link">
+          Калькулятор матриц
+        </a>
+
+        @if (isAdmin) {
+          <a routerLink="/admin/dashboard"
+             routerLinkActive="active"
+             class="nav-link admin-link">
+            Админ-панель
+          </a>
+        }
+
+        <button (click)="logout()" class="btn-logout">
+          Выйти
+        </button>
+      } @else {
+        <a routerLink="/auth/login" class="nav-link">
+          Вход
+        </a>
+        <a routerLink="/auth/registration" class="btn btn-outline">
+          Регистрация
         </a>
       }
-
-      <button (click)="logout()" class="btn-logout">
-        Выйти
-      </button>
     </nav>
   </div>
 </header>

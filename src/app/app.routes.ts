@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
 import { authGuard, adminGuard } from './guards/auth.guard';
 import { AuthComponent } from './auth/auth.component';
+import { MainPageComponent } from './components/main-page/main-page.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/calculator',
-    pathMatch: 'full'
+    component: MainPageComponent  // Главная страница
   },
 
   // Auth routes
@@ -57,6 +57,6 @@ export const routes: Routes = [
   // Wildcard route
   {
     path: '**',
-    redirectTo: '/calculator'
+    redirectTo: ''
   }
 ];

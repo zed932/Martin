@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -110,11 +110,25 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      });
+    }
+    return new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+  }
+
   // Регистрация пользователя
   register(userData: RegisterRequest): Observable<ApiResponse<UserResponse>> {
     return this.http.post<ApiResponse<UserResponse>>(
       `${this.apiUrl}/auth/register`,
-      userData
+      userData,
+      { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
     ).pipe(
       catchError(this.handleError)
     );
@@ -124,16 +138,27 @@ export class ApiService {
   login(credentials: LoginRequest): Observable<ApiResponse<{ user: UserResponse; token: string }>> {
     return this.http.post<ApiResponse<{ user: UserResponse; token: string }>>(
       `${this.apiUrl}/auth/login`,
-      credentials
+      credentials,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }),
+        withCredentials: true
+      }
     ).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Получение текущего пользователя
+  // Получение текущего пользователя - ИСПРАВЛЕНО
   getCurrentUser(): Observable<ApiResponse<UserResponse>> {
     return this.http.get<ApiResponse<UserResponse>>(
-      `${this.apiUrl}/auth/me`
+      `${this.apiUrl}/auth/me`,
+      {
+        headers: this.getAuthHeaders(),
+        withCredentials: true // <-- ВАЖНО: включить отправку cookies/credentials
+      }
     ).pipe(
       catchError(this.handleError)
     );
@@ -141,14 +166,21 @@ export class ApiService {
 
   // Выход
   logout(): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/auth/logout`, {}).pipe(
+    return this.http.post<ApiResponse>(
+      `${this.apiUrl}/auth/logout`,
+      {},
+      { headers: this.getAuthHeaders() }
+    ).pipe(
       catchError(this.handleError)
     );
   }
 
   // Обновление AuthService для работы с реальным backend
   refreshAuth(): Observable<ApiResponse<UserResponse>> {
-    return this.http.get<ApiResponse<UserResponse>>(`${this.apiUrl}/auth/refresh`).pipe(
+    return this.http.get<ApiResponse<UserResponse>>(
+      `${this.apiUrl}/auth/refresh`,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
       catchError(this.handleError)
     );
   }

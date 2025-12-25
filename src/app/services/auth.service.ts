@@ -1,8 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService, UserResponse } from './api.service';
-import { Observable, of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +10,11 @@ import { tap, catchError } from 'rxjs/operators';
 export class AuthService {
   private currentUser = signal<UserResponse | null>(null);
   private isLoggedInSignal = signal<boolean>(false);
-  private isInitialized = signal<boolean>(false);
-  private initializationError = signal<string | null>(null);
+  private isInitializedSignal = signal<boolean>(false);
+
+  // BehaviorSubject для отслеживания инициализации
+  private initializedSubject = new BehaviorSubject<boolean>(false);
+  public initialized$ = this.initializedSubject.asObservable();
 
   constructor(
     private apiService: ApiService,
@@ -24,37 +27,29 @@ export class AuthService {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      this.isInitialized.set(true);
+      this.isInitializedSignal.set(true);
+      this.initializedSubject.next(true);
       return;
     }
-  }
 
-  // Добавляем метод для проверки инициализации
-  isInitialized$(): boolean {
-    return this.isInitialized();
-  }
-
-  getInitializationError(): string | null {
-    return this.initializationError();
-  }
-
-  private checkAuth(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.apiService.getCurrentUser().subscribe({
-        next: (response) => {
-          if (response.success && response.data) {
-            this.currentUser.set(response.data);
-            this.isLoggedInSignal.set(true);
-          } else {
-            this.clearAuth();
-          }
-        },
-        error: () => {
+    // Загружаем данные пользователя по токену
+    this.apiService.getCurrentUser().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.currentUser.set(response.data);
+          this.isLoggedInSignal.set(true);
+        } else {
           this.clearAuth();
         }
-      });
-    }
+        this.isInitializedSignal.set(true);
+        this.initializedSubject.next(true);
+      },
+      error: () => {
+        this.clearAuth();
+        this.isInitializedSignal.set(true);
+        this.initializedSubject.next(true);
+      }
+    });
   }
 
   login(email: string, password: string): Observable<any> {
@@ -123,6 +118,11 @@ export class AuthService {
 
   isStudent(): boolean {
     return this.currentUser()?.role === 'student';
+  }
+
+  // Метод для проверки завершения инициализации
+  isInitialized(): boolean {
+    return this.isInitializedSignal();
   }
 
   quickLogin(role: 'admin' | 'student'): void {
