@@ -2,17 +2,31 @@ import { Routes } from '@angular/router';
 import { authGuard, adminGuard } from './guards/auth.guard';
 import { AuthComponent } from './auth/auth.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
-import { TestComponent } from './components/test/test.component'
+import { TestComponent } from './components/test/test.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: MainPageComponent  // Главная страница
+    component: MainPageComponent
   },
 
   {
     path: 'test/:id',
     component: TestComponent,
+    canActivate: [authGuard]
+  },
+
+  // Новая страница тестов для студентов
+  {
+    path: 'tests',
+    loadComponent: () => import('./components/tests-list/tests-list.component').then(m => m.TestsListComponent),
+    canActivate: [authGuard]
+  },
+
+  // Страница результатов тестов для студентов
+  {
+    path: 'my-test-results',
+    loadComponent: () => import('./components/my-test-results/my-test-results.component').then(m => m.MyTestResultsComponent),
     canActivate: [authGuard]
   },
 

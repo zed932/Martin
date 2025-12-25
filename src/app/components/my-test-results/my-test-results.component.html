@@ -1,0 +1,107 @@
+<div class="my-test-results">
+  <div class="page-header">
+    <h2>📊 Мои результаты тестов</h2>
+    <p>Статистика и история пройденных тестов</p>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Загрузка результатов...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="error">
+      {{ errorMessage }}
+    </div>
+  } @else if (testResults.length === 0) {
+    <div class="no-results">
+      <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h3>Нет результатов</h3>
+        <p>Вы еще не проходили тесты. Начните с выбора теста в разделе "Тесты".</p>
+        <a routerLink="/tests" class="btn-primary">
+          Перейти к тестам
+        </a>
+      </div>
+    </div>
+  } @else {
+    <!-- Статистика -->
+    <div class="stats-overview">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ totalTestsTaken }}</div>
+          <div class="stat-label">Всего тестов</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ averageScore }}%</div>
+          <div class="stat-label">Средний балл</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ bestScore }}%</div>
+          <div class="stat-label">Лучший результат</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- История тестов -->
+    <div class="results-section">
+      <h3>История тестов</h3>
+
+      <div class="results-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Тест</th>
+              <th>Дата</th>
+              <th>Результат</th>
+              <th>Оценка</th>
+              <th>Время</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (result of testResults; track result.id) {
+              <tr>
+                <td class="test-name">
+                  <div class="test-title">{{ result.testTitle }}</div>
+                </td>
+                <td class="test-date">
+                  {{ formatDate(result.completedAt) }}
+                </td>
+                <td class="test-score">
+                  <div class="score-container">
+                    <div class="score-bar">
+                      <div class="score-fill"
+                           [style.width.%]="result.score"
+                           [style.background-color]="getScoreColor(result.score)"></div>
+                    </div>
+                    <div class="score-value">
+                      {{ result.score }}%
+                    </div>
+                  </div>
+                </td>
+                <td class="test-grade">
+                  <span class="grade-badge"
+                        [style.background-color]="getGradeColor(result.grade)">
+                    {{ result.grade }}
+                  </span>
+                </td>
+                <td class="test-time">
+                  {{ formatTimeSpent(result.timeSpent) }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

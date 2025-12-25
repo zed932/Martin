@@ -1,0 +1,76 @@
+<div class="tests-list-page">
+  <div class="page-header">
+    <h2>📝 Доступные тесты</h2>
+    <p>Проверьте свои знания по различным темам</p>
+  </div>
+
+  <!-- Фильтры -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <label>Тема:</label>
+      <select class="filter-select" (change)="onTopicChange($event)">
+        @for (topic of topics; track topic.value) {
+          <option [value]="topic.value">{{ topic.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Сложность:</label>
+      <select class="filter-select" (change)="onDifficultyChange($event)">
+        @for (level of difficultyLevels; track level.value) {
+          <option [value]="level.value">{{ level.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Загрузка тестов...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="error">
+      {{ errorMessage }}
+    </div>
+  } @else if (filteredTests.length === 0) {
+    <div class="no-tests">
+      <p>Нет доступных тестов по выбранным критериям</p>
+    </div>
+  } @else {
+    <div class="tests-grid">
+      @for (test of filteredTests; track test.id) {
+        <div class="test-card">
+          <div class="test-header">
+            <div class="test-topic">
+              <span class="topic-badge">{{ getTopicName(test.topic) }}</span>
+              <span class="difficulty-badge" [class]="'difficulty-' + test.difficulty">
+                {{ getDifficultyName(test.difficulty) }}
+              </span>
+            </div>
+            <div class="test-time">
+              ⏱️ {{ test.timeLimit }} мин
+            </div>
+          </div>
+
+          <div class="test-content">
+            <h3 class="test-title">{{ test.title }}</h3>
+            <p class="test-description">{{ test.description }}</p>
+
+            <div class="test-meta">
+              <span class="meta-item">❓ {{ getQuestionCount(test) }} вопросов</span>
+              <span class="meta-item">📊 Проходной балл: 60%</span>
+            </div>
+          </div>
+
+          <div class="test-actions">
+            <button class="btn-start" (click)="startTest(test.id)">
+              Начать тест
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

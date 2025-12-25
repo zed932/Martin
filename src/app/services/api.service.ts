@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
+
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -380,7 +381,7 @@ export class ApiService {
     );
   }
 
-// Получить результаты тестов текущего пользователя
+  // Получить результаты тестов текущего пользователя
   getUserTestResults(): Observable<ApiResponse<TestResultResponse[]>> {
     return this.http.get<ApiResponse<TestResultResponse[]>>(
       `${this.apiUrl}/test-results/user`,
@@ -389,6 +390,17 @@ export class ApiService {
       catchError(this.handleError)
     );
   }
+
+  // Получить активные тесты для пользователя
+  getActiveTests(): Observable<ApiResponse<TestResponse[]>> {
+    return this.http.get<ApiResponse<TestResponse[]>>(
+      `${this.apiUrl}/tests/active`,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   // ========== ОБРАБОТКА ОШИБОК ==========
 
   private handleError(error: HttpErrorResponse): Observable<never> {

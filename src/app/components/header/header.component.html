@@ -19,6 +19,7 @@
 
     <nav class="nav-menu">
       @if (user) {
+        <!-- Основные разделы -->
         <a routerLink="/calculator"
            routerLinkActive="active"
            class="nav-link">
@@ -35,6 +36,23 @@
           Калькулятор матриц
         </a>
 
+        <!-- Тесты для всех пользователей -->
+        <a routerLink="/tests"
+           routerLinkActive="active"
+           class="nav-link">
+          📝 Тесты
+        </a>
+
+        <!-- Результаты тестов для студентов -->
+        @if (user.role === 'student') {
+          <a routerLink="/my-test-results"
+             routerLinkActive="active"
+             class="nav-link">
+            📊 Мои результаты
+          </a>
+        }
+
+        <!-- Админ-панель -->
         @if (isAdmin) {
           <a routerLink="/admin/dashboard"
              routerLinkActive="active"
