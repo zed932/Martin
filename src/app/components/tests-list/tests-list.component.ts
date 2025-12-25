@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ApiService, TestResponse, TestResultResponse } from '../../services/api.service';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-tests-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './tests-list.component.html',
   styleUrls: ['./tests-list.component.css']
 })
