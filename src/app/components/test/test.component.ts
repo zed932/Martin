@@ -50,7 +50,7 @@ import { lastValueFrom } from 'rxjs';
                           <input
                             type="radio"
                             [formControlName]="'question_' + i"
-                            [value]="j"
+                            [value]="j.toString()"
                             name="question{{i}}">
                           {{ option }}
                         </label>
@@ -322,6 +322,25 @@ export class TestComponent implements OnInit, OnDestroy {
     return diffMap?.label || difficulty;
   }
 
+  // В test.component.ts добавьте этот метод:
+  normalizeAnswers(answers: any[]): string[] {
+    return answers.map(answer => {
+      if (answer === null || answer === undefined) return '';
+      // Конвертируем числа в строки для single вопросов
+      if (typeof answer === 'number') return answer.toString();
+      // Убираем лишние запятые для multiple вопросов
+      if (typeof answer === 'string' && answer.includes(',')) {
+        return answer.split(',')
+          .map(a => a.trim())
+          .filter(Boolean)
+          .sort()
+          .join(',');
+      }
+      return answer.toString();
+    });
+  }
+
+// Измените метод submitTest():
   async submitTest() {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
@@ -340,25 +359,25 @@ export class TestComponent implements OnInit, OnDestroy {
       }
 
       // Собираем ответы
-      const answers: string[] = [];
+      const rawAnswers: any[] = [];
       for (let i = 0; i < (this.test.questions?.length || 0); i++) {
         const control = this.testForm.get(`question_${i}`);
-        const value = control?.value || '';
-
-        // Для текстовых ответов сохраняем как есть
-        // Для одиночных/множественных - как строку с индексами
-        answers.push(value);
+        rawAnswers.push(control?.value || '');
       }
+
+      // НОРМАЛИЗУЕМ ОТВЕТЫ
+      const normalizedAnswers = this.normalizeAnswers(rawAnswers);
 
       console.log('Отправка теста:', {
         testId: this.test.id,
-        answers,
+        rawAnswers,
+        normalizedAnswers,
         timeSpent: Math.floor(timeSpent)
       });
 
       const submission = {
         testId: this.test.id,
-        answers,
+        answers: normalizedAnswers, // Используем нормализованные ответы
         timeSpent: Math.floor(timeSpent)
       };
 
@@ -366,14 +385,7 @@ export class TestComponent implements OnInit, OnDestroy {
 
       if (response.success && response.data) {
         console.log('Результат теста:', response.data);
-
-        // Перенаправляем на страницу результатов
-        this.router.navigate(['/my-test-results'], {
-          queryParams: {
-            testId: this.test.id,
-            score: response.data.score
-          }
-        });
+        this.router.navigate(['/my-test-results']);
       } else {
         this.errorMessage = response.message || 'Ошибка при отправке теста';
       }

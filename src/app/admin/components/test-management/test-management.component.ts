@@ -163,15 +163,36 @@ export class TestManagementComponent implements OnInit {
       try {
         const testData: TestCreateRequest = {
           ...this.testForm.value,
-          questions: this.questionsFormArray.value.map((q: any) => ({
-            text: q.text,
-            type: q.type,
-            options: q.options || [],
-            correctAnswer: q.correctAnswer,
-            points: q.points || 1,
-            order: q.order || 0
-          }))
+          questions: this.questionsFormArray.value.map((q: any, index: number) => {
+            // Исправляем формат правильных ответов для множественного выбора
+            let correctAnswer = q.correctAnswer;
+
+            // Если тип multiple и ответ - массив, преобразуем в строку
+            if (q.type === 'multiple') {
+              if (Array.isArray(correctAnswer)) {
+                correctAnswer = correctAnswer.join(',');
+              } else if (typeof correctAnswer === 'string' && correctAnswer.includes(',')) {
+                // Убираем возможные пробелы и сортируем
+                correctAnswer = correctAnswer.split(',')
+                  .map((a: string) => a.trim())
+                  .filter(Boolean)
+                  .sort()
+                  .join(',');
+              }
+            }
+
+            return {
+              text: q.text,
+              type: q.type,
+              options: q.options || [],
+              correctAnswer: correctAnswer,
+              points: q.points || 1,
+              order: q.order || index
+            };
+          })
         };
+
+        console.log('Отправка теста:', testData);
 
         if (this.isEditing && this.editingTestId) {
           // Обновление существующего теста
