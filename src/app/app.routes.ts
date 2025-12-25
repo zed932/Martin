@@ -2,11 +2,18 @@ import { Routes } from '@angular/router';
 import { authGuard, adminGuard } from './guards/auth.guard';
 import { AuthComponent } from './auth/auth.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { TestComponent } from './components/test/test.component'
 
 export const routes: Routes = [
   {
     path: '',
     component: MainPageComponent  // Главная страница
+  },
+
+  {
+    path: 'test/:id',
+    component: TestComponent,
+    canActivate: [authGuard]
   },
 
   // Auth routes

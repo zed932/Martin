@@ -2,6 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChang
 import { provideRouter } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { ApiService } from './services/api.service';
 
 import { routes } from './app.routes';
 import {take} from 'rxjs';
@@ -12,6 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withFetch()),
+    ApiService,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAuth,

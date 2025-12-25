@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ApiService, TestResponse, Question, TestCreateRequest, TestResultResponse } from '../../../services/api.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-test-results',
@@ -8,66 +10,88 @@ import { CommonModule } from '@angular/common';
   templateUrl: './test-results.component.html',
   styleUrls: ['./test-results.component.css']
 })
-export class TestResultsComponent {
-  testResults = [
-    {
-      id: 1,
-      userName: 'Иван Иванов',
-      userEmail: 'ivan@edu.ru',
-      testName: 'Основы теории множеств',
-      date: '2024-03-10',
-      correct: 14,
-      total: 15,
-      grade: 'Отлично',
-      timeSpent: '25 мин'
-    },
-    {
-      id: 2,
-      userName: 'Мария Петрова',
-      userEmail: 'maria@edu.ru',
-      testName: 'Матричные операции',
-      date: '2024-03-09',
-      correct: 18,
-      total: 20,
-      grade: 'Отлично',
-      timeSpent: '40 мин'
-    },
-    {
-      id: 3,
-      userName: 'Алексей Смирнов',
-      userEmail: 'alex@edu.ru',
-      testName: 'Алгебраические выражения',
-      date: '2024-03-08',
-      correct: 15,
-      total: 25,
-      grade: 'Хорошо',
-      timeSpent: '55 мин'
-    },
-    {
-      id: 4,
-      userName: 'Елена Кузнецова',
-      userEmail: 'elena@edu.ru',
-      testName: 'Основы теории множеств',
-      date: '2024-03-07',
-      correct: 10,
-      total: 15,
-      grade: 'Удовлетворительно',
-      timeSpent: '28 мин'
+export class TestResultsComponent implements OnInit {
+  testResults: TestResultResponse[] = [];
+  isLoading = false;
+  errorMessage = '';
+
+  constructor(private apiService: ApiService) {}
+
+  async ngOnInit() {
+    await this.loadTestResults();
+  }
+
+  async loadTestResults() {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    try {
+      const response = await lastValueFrom(this.apiService.getAllTestResults());
+      if (response.success) {
+        this.testResults = response.data || [];
+      } else {
+        this.errorMessage = response.message || 'Не удалось загрузить результаты';
+      }
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Ошибка при загрузке результатов';
+    } finally {
+      this.isLoading = false;
     }
-  ];
+  }
+
+  // Добавьте эти методы
+  filterResults(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const value = select.value;
+    // Фильтрация будет добавлена позже
+  }
+
+  exportResults() {
+    // Экспорт будет добавлен позже
+    alert('Экспорт результатов в разработке');
+  }
 
   get totalTests(): number {
     return this.testResults.length;
   }
 
   get averageScore(): string {
-    const total = this.testResults.reduce((sum, result) => sum + (result.correct / result.total), 0);
-    const average = (total / this.testResults.length) * 100;
+    if (this.testResults.length === 0) return '0';
+    const total = this.testResults.reduce((sum, result) => sum + result.score, 0);
+    const average = total / this.testResults.length;
     return average.toFixed(1);
   }
 
   get bestScore(): string {
-    const best = Math.max(...this.testResults.map(result => (result.correct / result.total) * 100));
+    if (this.testResults.length === 0) return '0';
+    const best = Math.max(...this.testResults.map(result => result.score));
     return best.toFixed(1);
+  }
+
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('ru-RU');
+  }
+
+  formatTimeSpent(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // Получить имя пользователя из результата
+  getUserName(result: TestResultResponse): string {
+    // В реальном приложении здесь должна быть логика получения имени пользователя
+    return `Пользователь ${result.userId}`;
+  }
+
+  // Получить email пользователя
+  getUserEmail(result: TestResultResponse): string {
+    // В реальном приложении здесь должна быть логика получения email
+    return `user${result.userId}@example.com`;
+  }
+
+  // Получить название теста
+  getTestName(result: TestResultResponse): string {
+    return result.testTitle || `Тест ${result.testId}`;
   }
 }

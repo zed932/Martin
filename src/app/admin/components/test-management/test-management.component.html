@@ -1,20 +1,22 @@
 <div class="test-management">
   <div class="management-header">
     <h3>Управление тестами</h3>
-    <button class="btn-primary" (click)="showAddTestForm = !showAddTestForm">
-      {{ showAddTestForm ? '✕ Отмена' : '+ Создать тест' }}
+    <button
+      class="btn-primary"
+      (click)="!isEditing ? showAddTestForm = !showAddTestForm : cancelEdit()">
+      {{ isEditing ? '✕ Отменить редактирование' : (showAddTestForm ? '✕ Отмена' : '+ Создать тест') }}
     </button>
   </div>
 
   @if (showAddTestForm) {
     <div class="add-test-form">
-      <h4>Создание нового теста</h4>
+      <h4>{{ isEditing ? 'Редактирование теста' : 'Создание нового теста' }}</h4>
 
       @if (errorMessage) {
         <div class="alert alert-danger">{{ errorMessage }}</div>
       }
 
-      <form [formGroup]="testForm" (ngSubmit)="createTest()">
+      <form [formGroup]="testForm" (ngSubmit)="createOrUpdateTest()">
         <div class="form-group">
           <label>Название теста *</label>
           <input
@@ -63,40 +65,71 @@
           }
         </div>
 
-        <div class="form-group">
-          <label>Сложность</label>
-          <select formControlName="difficulty" class="form-control">
-            @for (level of difficultyLevels; track level.value) {
-              <option [value]="level.value">{{ level.label }}</option>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Сложность</label>
+            <select formControlName="difficulty" class="form-control">
+              @for (level of difficultyLevels; track level.value) {
+                <option [value]="level.value">{{ level.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label>Время на выполнение (минут) *</label>
+            <input
+              type="number"
+              formControlName="timeLimit"
+              class="form-control"
+              min="5"
+              max="180"
+              [class.is-invalid]="timeLimit?.invalid && timeLimit?.touched">
+            @if (timeLimit?.invalid && timeLimit?.touched) {
+              <div class="invalid-feedback">
+                Время должно быть от 5 до 180 минут
+              </div>
             }
-          </select>
+          </div>
         </div>
 
         <div class="form-group">
-          <label>Время на выполнение (минут) *</label>
+          <label>Проходной балл (%)</label>
           <input
             type="number"
-            formControlName="timeLimit"
+            formControlName="passingScore"
             class="form-control"
-            min="5"
-            max="180"
-            [class.is-invalid]="timeLimit?.invalid && timeLimit?.touched">
-          @if (timeLimit?.invalid && timeLimit?.touched) {
+            min="0"
+            max="100"
+            [class.is-invalid]="passingScore?.invalid && passingScore?.touched">
+          @if (passingScore?.invalid && passingScore?.touched) {
             <div class="invalid-feedback">
-              Время должно быть от 5 до 180 минут
+              Проходной балл должен быть от 0 до 100
             </div>
           }
         </div>
+
+        <!-- Простая форма для вопросов -->
+        <app-test-questions
+          [questionsFormArray]="questionsFormArray"
+          (questionsChange)="onQuestionsChange($event)">
+        </app-test-questions>
 
         <div class="form-actions">
           <button
             type="submit"
             class="btn-success"
-            [disabled]="testForm.invalid || isLoading">
+            [disabled]="testForm.invalid || questionsFormArray.length === 0 || isLoading">
             @if (isLoading) {
               <span class="spinner-border spinner-border-sm me-2"></span>
             }
-            Создать тест
+            {{ isEditing ? 'Обновить тест' : 'Создать тест' }}
+          </button>
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cancelEdit()"
+            [disabled]="isLoading">
+            Отмена
           </button>
         </div>
       </form>
@@ -131,15 +164,17 @@
           <p>{{ test.description }}</p>
           <div class="test-meta">
             <span class="topic-badge">{{ getTopicName(test.topic) }}</span>
-            <span>Вопросов: {{ test.questions.length || 0 }}</span> <!-- Исправлено -->
+            <span>Вопросов: {{ test.questions.length || 0 }}</span> <!-- Убрали ? -->
             <span>Время: {{ test.timeLimit }} мин</span>
-            <span>Сложность: {{ getDifficultyName(test.difficulty) }}</span> <!-- Исправлено -->
+            <span>Сложность: {{ getDifficultyName(test.difficulty) }}</span>
+            <span class="status-badge" [class.active]="test.isActive">
+              {{ test.isActive ? 'Активен' : 'Неактивен' }}
+            </span>
           </div>
         </div>
         <div class="test-actions">
-          <button class="btn-edit">✏️ Редактировать</button>
+          <button class="btn-edit" (click)="editTest(test)">✏️ Редактировать</button>
           <button class="btn-delete" (click)="deleteTest(test.id)">🗑️ Удалить</button>
-          <button class="btn-view">👁️ Просмотр</button>
         </div>
       </div>
     }

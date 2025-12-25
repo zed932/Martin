@@ -100,6 +100,74 @@ export interface TestResult {
   correctCount: number;
   totalCount: number;
   resultId: string;
+  grade?: string;
+}
+
+// В api.service.ts, добавьте/обновите интерфейсы:
+
+export interface Question {
+  id: string;
+  text: string;
+  type: 'single' | 'multiple' | 'text';
+  options?: string[];
+  correctAnswer?: string;
+  points?: number;
+  order?: number;
+}
+
+export interface TestCreateRequest {
+  title: string;
+  description: string;
+  topic: string;
+  questions: Omit<Question, 'id'>[];
+  timeLimit: number;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  passingScore?: number;
+}
+
+export interface TestUpdateRequest {
+  title?: string;
+  description?: string;
+  topic?: string;
+  questions?: Omit<Question, 'id'>[];
+  timeLimit?: number;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  passingScore?: number;
+  isActive?: boolean;
+}
+
+// Добавьте интерфейс для результата теста
+export interface TestResultResponse {
+  id: string;
+  userId: number;
+  testId: string;
+  testTitle: string;
+  answers: string[];
+  score: number;
+  correctCount: number;
+  totalCount: number;
+  grade: string;
+  timeSpent: number;
+  completedAt: string;
+}
+
+// Добавьте интерфейс для отображения теста пользователю
+export interface UserTestResponse {
+  id: string;
+  title: string;
+  description: string;
+  topic: string;
+  questions: Array<{
+    id: string;
+    text: string;
+    type: 'single' | 'multiple' | 'text';
+    options?: string[];
+    // Не включаем correctAnswer для пользователя
+  }>;
+  timeLimit: number;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  createdAt: string;
+  updatedAt: string;
 }
 
 @Injectable({
@@ -302,6 +370,25 @@ export class ApiService {
     );
   }
 
+  // Получить все результаты тестов (для администратора)
+  getAllTestResults(): Observable<ApiResponse<TestResultResponse[]>> {
+    return this.http.get<ApiResponse<TestResultResponse[]>>(
+      `${this.apiUrl}/admin/test-results`,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+// Получить результаты тестов текущего пользователя
+  getUserTestResults(): Observable<ApiResponse<TestResultResponse[]>> {
+    return this.http.get<ApiResponse<TestResultResponse[]>>(
+      `${this.apiUrl}/test-results/user`,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
   // ========== ОБРАБОТКА ОШИБОК ==========
 
   private handleError(error: HttpErrorResponse): Observable<never> {
